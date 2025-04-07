@@ -1,0 +1,138 @@
+
+.card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 0;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 320px;
+    min-height: 500px;
+  }
+  
+  .card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+    background: linear-gradient(45deg, #f8f9fa 0%, #ffffff 100%);
+  }
+  
+  .imageContainer {
+    width: 100%;
+    height: 220px;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.4s ease;
+  }
+  
+  .card:hover .imageContainer {
+    transform: scale(1.02);
+  }
+  
+  .image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 8px;
+  }
+  
+  .title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+    transition: color 0.3s ease;
+  }
+  
+  .card:hover .title {
+    color: #e74c3c;
+    text-shadow: 0 2px 4px rgba(231, 76, 60, 0.1);
+  }
+  
+  .description {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #576574;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  
+  .detailItem {
+    font-size: 0.9rem;
+    color: #576574;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .detailItem::before {
+    content: "•";
+    color: #3498db;
+    font-size: 1.2rem;
+    margin-right: 5px;
+  }
+  .participateButton {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+  }
+  
+  .participateButton:hover {
+    background-color: #0056b3;
+  }
+  
+  .participateButton:active {
+    background-color: #004085;
+  } 
+  .tagsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: auto;
+  }
+  
+  .tag {
+    background: #3498db;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-transform: lowercase;
+  }
+  
+  .card:hover .tag {
+    background: #e74c3c;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(231, 76, 60, 0.2);
+  }
