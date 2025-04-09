@@ -4,7 +4,7 @@ import CardList from "../comp/UI/CardList/CardList.jsx";
 import Map from "../comp/UI/Map/Map.jsx";
 
 const Guestt = () => {
-    const [mock, setMock] = useState([
+    const [mock] = useState([
         {
             name: "Концерт маканчика",
             description: `Подо мной M5, Asphalt 8...`,
