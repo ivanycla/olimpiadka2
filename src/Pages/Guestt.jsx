@@ -44,7 +44,7 @@ const Guestt = () => {
     ]);
 
   
-console.log('API Key:', process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
+
 
     const mapMarkers = mock.map(event => ({
         lat: event.coordinates.lat,
