@@ -27,6 +27,6 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: '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'  # или secrets.GITHUB_TOKEN
+          github_token: '${{ secrets.GH_TOKEN }}'  # или secrets.GITHUB_TOKEN
           publish_dir: ./build
           force_orphan: true  # Очищает историю gh-pages
