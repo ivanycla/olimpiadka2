@@ -36,7 +36,7 @@ const Card = ({
         <p className={styles.description}>{discription}</p>
         
         <div className={styles.details}>
-          <p className={styles.detailItem}>Формат: {phormat}</p>
+          <p className={styles.detailItem}>Форматт: {phormat}</p>
           <p className={styles.detailItem}>Место: {place}</p>
           <p className={styles.detailItem}>Длительность: {duration}</p>
           <p className={styles.detailItem}>Дата: {data}</p>
