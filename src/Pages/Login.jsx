@@ -12,7 +12,7 @@ const Login = () => {
     const handleSubmit = async (e) => {  
         e.preventDefault(); 
         setIsLoading(true);   
-        setError("");  
+        // setError("");  
 
         
         alert("на сервер отправлять будем ззапрос ");  
