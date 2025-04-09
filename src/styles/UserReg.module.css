@@ -1,0 +1,79 @@
+/* UserReg.module.css */  
+
+:root {  
+    --primary-color: #007BFF;  
+    --secondary-color: #0056b3;  
+    --background-color: #f5faff;  
+    --error-color: #d9534f;  
+    --text-color: #333;  
+}  
+
+.container {  
+    max-width: 450px;  
+    margin: 50px auto;  
+    padding: 30px;  
+    border-radius: 12px;  
+    background: white;  
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);  
+}  
+
+.form {  
+    display: flex;  
+    flex-direction: column;  
+}  
+
+h2 {  
+    text-align: center;  
+    margin-bottom: 20px;  
+    color: var(--primary-color);  
+    font-weight: 600;  
+}  
+
+label {  
+    margin-bottom: 5px;  
+    font-weight: bold;  
+    color: var(--text-color);  
+}  
+
+input {  
+    padding: 12px;  
+    margin-bottom: 15px;  
+    border: 1px solid #ccc;  
+    border-radius: 5px;  
+    transition: border-color 0.3s, box-shadow 0.3s;  
+    font-size: 16px;  
+}  
+
+input:focus {  
+    border-color: var(--primary-color);  
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);  
+    outline: none;  
+}  
+
+.error {  
+    color: var(--error-color);  
+    margin: 15px 0;  
+    font-weight: bold;  
+    text-align: center;  
+}  
+
+button {  
+    padding: 12px;  
+    color: white;  
+    background-color: var(--primary-color);  
+    border: none;  
+    border-radius: 5px;  
+    cursor: pointer;  
+    font-size: 16px;  
+    transition: background-color 0.3s, transform 0.2s;  
+}  
+
+button:hover {  
+    background-color: var(--secondary-color);  
+    transform: translateY(-1px);  
+}  
+
+button:disabled {  
+    background-color: #a0c4ff;  
+    cursor: not-allowed;  
+}  

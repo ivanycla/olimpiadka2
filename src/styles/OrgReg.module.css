@@ -1,0 +1,122 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    background-color: #f0f2f5;
+  }
+  
+  .form {
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #1a1a1a;
+    font-size: 1.8rem;
+  }
+  
+  .form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .form input[type="email"],
+  .form input[type="text"],
+  .form input[type="password"] {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  
+  .form input[type="file"] {
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0;
+  }
+  
+  .form input:focus {
+    outline: none;
+    border-color: #1890ff;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  }
+  
+  .form button {
+    width: 100%;
+    padding: 1rem;
+    background-color: #1890ff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .form button:hover {
+    background-color: #40a9ff;
+  }
+  
+  .form button:disabled {
+    background-color: #8cc8ff;
+    cursor: not-allowed;
+  }
+  
+  .error {
+    color: #ff4d4f;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: #fff1f0;
+    border: 1px solid #ffccc7;
+    border-radius: 5px;
+    text-align: center;
+  }
+  
+  /* Стили для кастомного поля загрузки файла */
+  .fileInput {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  
+  .fileInput input[type="file"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+    height: 100%;
+    width: 100%;
+  }
+  
+  .fileInput label {
+    display: block;
+    padding: 0.8rem;
+    background: #fafafa;
+    border: 1px dashed #d9d9d9;
+    border-radius: 5px;
+    text-align: center;
+    color: #666;
+    cursor: pointer;
+    transition: border-color 0.3s;
+  }
+  
+  .fileInput label:hover {
+    border-color: #1890ff;
+    color: #1890ff;
+  }
