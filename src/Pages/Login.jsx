@@ -6,14 +6,14 @@ const Login = () => {
     const [email, setEmail] = useState("");  
     const [pass, setPass] = useState("");  
     const [isLoading, setIsLoading] = useState(false);  
-    // const navigate = useNavigate();  
+    const navigate = useNavigate();  
     // const [error, setError] = useState("");  
 
     const handleSubmit = async (e) => {  
         e.preventDefault(); 
         setIsLoading(true);   
         // setError("");  
-
+       navigate('/UserPage')
         
         alert("на сервер отправлять будем ззапрос ");//тут запрос на сервер взять от туда юзерid  засторить локально? при навигации на профиль юзерid  отправиь запрос на сервер найти по юзер id???  
         
