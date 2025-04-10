@@ -2,7 +2,7 @@ import React from "react";
 import Card from "../Card/Card.jsx";
 import styles from "./CardList.module.css"; 
 
-const CardList = ({ events }) => {
+const CardList = ({ events,isLog}) => {
   return (
     <div className={styles.listContainer}>
       {events.map((event, index) => (
@@ -17,6 +17,8 @@ const CardList = ({ events }) => {
           info={event.info}
           tags={event.tags}
           img={event.img}
+          isLog={isLog}
+          //userId={userId}
         />
       ))}
     </div>

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CardList from "../comp/UI/CardList/CardList.jsx";
 import Map from "../comp/UI/Map/Map.jsx";
+import FindFriend from "../comp/UI/FindFriend/FindFriend.jsx";
 
-const Guestt = () => {
+const UserPage = () => {
     const [mock, setMock] = useState([
         {
             name: "Концерт маканчика",
@@ -42,9 +43,11 @@ const Guestt = () => {
             img: "https://sun9-73.userapi.com/impf/mk2xRlNqECIqmVBF9q1xbxY0a6xS5ArgBq5DtA/MxTv32K_9sg.jpg?size=1818x606&quality=95&crop=0,191,1500,500&sign=74cfa2b24e8d68f431fafc9f34b1144c&type=cover_group"
         }
     ]);
-    const [isLog,setIslog]=useState(false);
-  
+    
 
+    const navigate = useNavigate();
+    const [flagFindFriend,setFlagFindFriend]=useState(false);
+    const [isLog,setIsLog]=useState(true);
 
     const mapMarkers = mock.map(event => ({
         lat: event.coordinates.lat,
@@ -52,14 +55,27 @@ const Guestt = () => {
         title: event.name,
         info: event.info
     }));
-
+    const handleClick=()=>{
+        navigate("/Profile")//navigate("/Profile/{userId},{{state:userId}}");
+    }
+    const handleFindFriend= () =>{
+        setFlagFindFriend(true);
+    }
     return (
         <div className="guest-page">
             <header style={{ padding: "20px", display: "flex", justifyContent: "space-between" }}>
-                <Link to="/login" style={{ textDecoration: "none", color: "#007bff" }}>
-                    Войти
-                </Link>
-                
+                <button onClick={handleClick}>
+                    Профиль
+                    </button>
+                    <button onClick={handleFindFriend}>
+                        найти друга
+                    </button>
+                    {flagFindFriend && (
+  <div className="find-friend-container">
+    <FindFriend />
+    <button onClick={() => setFlagFindFriend(false)}>Закрыть</button>
+  </div>
+)}
             </header>
             
             <div style={{ padding: "20px" }}>
@@ -69,10 +85,10 @@ const Guestt = () => {
                 </div>
                 
                 
-                <CardList 
-                events={mock}
-                isLog={isLog}
-                 />
+                <CardList events={mock}
+                isLog={true}
+                //userId={userdId}
+                />
                 
                 {/* Фильтры (можно добавить позже) */}
                 <div style={{ marginTop: "30px", padding: "20px", background: "#f8f9fa" }}>
@@ -86,4 +102,4 @@ const Guestt = () => {
     );
 };
 
-export default Guestt;
+export default UserPage;

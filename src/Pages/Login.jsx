@@ -15,7 +15,7 @@ const Login = () => {
         setError("");  
 
         
-        alert("на сервер отправлять будем ззапрос ");  
+        alert("на сервер отправлять будем ззапрос ");//тут запрос на сервер взять от туда юзерid  засторить локально? при навигации на профиль юзерid  отправиь запрос на сервер найти по юзер id???  
         
       
         setIsLoading(false);  
@@ -41,9 +41,11 @@ const Login = () => {
                     onChange={(e) => setPass(e.target.value)}  
                     className={styles.input}  
                 />  
+                <Link to="/UserPage">
                 <button type="submit" className={styles.button} disabled={isLoading}>  
                     {isLoading ? 'Загрузка...' : 'Войти'}  
                 </button>  
+                </Link>
             </form>  
             <div className={styles.links}>  
                 <Link to="/UserReg" className={styles.link}>  

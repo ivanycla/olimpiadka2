@@ -5,6 +5,7 @@ import Guestt from './Pages/Guestt';
 import Login from './Pages/Login';
 import UserReg from './Pages/UserReg';
 import OrgReg from './Pages/OrgReg';
+import UserPage from './Pages/UserPage';
 function App() {
   return (
     <div className="App">
@@ -20,6 +21,12 @@ function App() {
     </Routes>
     <Routes>
       <Route path='/OrgReg' element={<OrgReg/>}/>
+    </Routes>
+    <Routes>
+      <Route path='/UserPage' element={<UserPage/>}/>{/* '/UserPage/:userId' */}
+    </Routes>
+    <Routes>
+      <Route path='/Profile/' element={<UserPage/>}/>{/* '/Profile/:userId' */}
     </Routes>
     </BrowserRouter>
     </div>

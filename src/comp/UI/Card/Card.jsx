@@ -1,6 +1,7 @@
 import React, { use, useState } from "react";
 import styles from "./Card.module.css"; 
 import AlertReg from "../AlertReg/AlertReg";
+import { useNavigate } from "react-router-dom";
 
 const Card = ({
   name,
@@ -11,9 +12,11 @@ const Card = ({
   data,
   info,
   tags,
-  img
+  img,
+  isLog
 }) => {
   const [flagGuest,setFlagGuest]=useState(false);
+  const navigate=useNavigate();
   const handleClick = () => {
     setFlagGuest(true);
   };
@@ -52,10 +55,11 @@ const Card = ({
             ))}
           </div>
         }
+
          <button onClick={handleClick}
            className={styles.participateButton} 
          >Участвовать</button>
-         {flagGuest && (
+         {!isLog && (
         <AlertReg 
           isVisible={flagGuest}
           onClose={handleCloseAlert}
