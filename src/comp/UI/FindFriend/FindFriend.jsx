@@ -32,7 +32,7 @@ const FindFriend = () => {
 
     return (
         <div style={{ padding: '20px' }}>
-            <h2>Поиск друзей</h2>
+            <h2>Поиск друзей с сервера массив и в локалке сторить будем</h2>
             <input
                 type="text"
                 placeholder="Введите имя друга..."
