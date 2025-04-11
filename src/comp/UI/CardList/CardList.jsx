@@ -2,11 +2,11 @@ import React from "react";
 import Card from "../Card/Card.jsx";
 import styles from "./CardList.module.css"; 
 
-const CardList = ({ events,isLog}) => {
+const CardList = ({ events,isLog,filter}) => {
   return (
     <div className={styles.listContainer}>
       {events.map((event, index) => (
-        <Card
+        ((event.tags.includes(filter)) || filter === 'all') ? <Card
           key={index}
           name={event.name}
           discription={event.discription}
@@ -19,7 +19,7 @@ const CardList = ({ events,isLog}) => {
           img={event.img}
           isLog={isLog}
           //userId={userId}
-        />
+        /> : ''
       ))}
     </div>
   );

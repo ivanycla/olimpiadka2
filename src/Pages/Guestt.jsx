@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import CardList from "../comp/UI/CardList/CardList.jsx";
 import Map from "../comp/UI/Map/Map.jsx";
+import './Guestt.css'
+import FilterButton from "../comp/UI/FilterButton/FilterButton.jsx";
 
 const Guestt = () => {
+
     const [mock] = useState([
         {
             name: "Концерт маканчика",
@@ -44,7 +47,11 @@ const Guestt = () => {
     ]);
     const [isLog,setIslog]=useState(false);
   
-
+    const [filter, setFilter] = useState('all')
+    function handleFilter(e, type){
+        setFilter(type)
+        e.target.className = 'active'
+    }
 
     const mapMarkers = mock.map(event => ({
         lat: event.coordinates.lat,
@@ -67,20 +74,21 @@ const Guestt = () => {
                 <div style={{ marginBottom: "40px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}>
                     <Map markers={mapMarkers} />
                 </div>
-                
-                
+
+                <div style={{ marginTop: "30px", padding: "20px", background: "#f8f9fa" }}>
+                    <FilterButton onClick={() => {setFilter('all')}} isActive={filter === 'all'}>Все</FilterButton>
+                    <FilterButton onClick={() => {setFilter('offline')}} isActive={filter === 'offline'}>Оффлайн</FilterButton>
+                    <FilterButton onClick={() => {setFilter('online')}} isActive={filter === 'online'}>Онлайн</FilterButton>
+                    <FilterButton onClick={() => {setFilter('music')}} isActive={filter === 'music'}>Музыка</FilterButton>
+                </div>
+
                 <CardList 
                 events={mock}
                 isLog={isLog}
+                filter={filter}
                  />
                 
-                {/* Фильтры (можно добавить позже) */}
-                <div style={{ marginTop: "30px", padding: "20px", background: "#f8f9fa" }}>
-                    <p>Тут можно добавить фильтры:</p>
-                    <button style={{ marginRight: "10px" }}>Оффлайн</button>
-                    <button style={{ marginRight: "10px" }}>Музыка</button>
-                    <button>Все</button>
-                </div>
+                
             </div>
         </div>
     );
