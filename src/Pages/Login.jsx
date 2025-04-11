@@ -1,20 +1,19 @@
 import React, { useState } from "react";  
 import { Link } from "react-router-dom";  
 import styles from "../styles/Login.module.css";  
-
+import { useNavigate } from "react-router-dom";
 const Login = () => {  
     const [email, setEmail] = useState("");  
     const [pass, setPass] = useState("");  
     const [isLoading, setIsLoading] = useState(false);  
-    // const navigate = useNavigate();  
-    // const [error, setError] = useState("");  
+    const navigate = useNavigate();  
+    const [error, setError] = useState("");  
 
     const handleSubmit = async (e) => {  
         e.preventDefault(); 
         setIsLoading(true);   
-        // setError("");  
-
         
+
         alert("на сервер отправлять будем ззапрос ");//тут запрос на сервер взять от туда юзерid  засторить локально? при навигации на профиль юзерid  отправиь запрос на сервер найти по юзер id???  
         
       
