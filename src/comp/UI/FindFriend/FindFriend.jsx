@@ -1,11 +1,11 @@
+// FindFriend.js
 import React, { useState, useEffect } from "react";
 
 const FindFriend = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredFriends, setFilteredFriends] = useState([]);
     const [addedFriends, setAddedFriends] = useState([]);
-    
-    const [friends] = useState([
+    const [mockFriends] = useState([
         "чмо",
         "шлюза",
         "матье бал",
@@ -13,26 +13,34 @@ const FindFriend = () => {
         "лазовский"
     ]);
 
+    // Загрузка сохраненных друзей при монтировании
+    useEffect(() => {
+        const savedFriends = JSON.parse(localStorage.getItem("friends")) || [];
+        setAddedFriends(savedFriends);
+    }, []);
+
     useEffect(() => {
         if (searchTerm) {
-            const results = friends.filter(friend =>
+            const results = mockFriends.filter(friend =>
                 friend.toLowerCase().includes(searchTerm.toLowerCase())
             );
             setFilteredFriends(results);
         } else {
             setFilteredFriends([]);
         }
-    }, [searchTerm, friends]);
+    }, [searchTerm, mockFriends]);
 
     const handleAddFriend = (friend) => {
         if (!addedFriends.includes(friend)) {
-            setAddedFriends([...addedFriends, friend]);
+            const newFriends = [...addedFriends, friend];
+            setAddedFriends(newFriends);
+            localStorage.setItem("friends", JSON.stringify(newFriends));
         }
     };
 
     return (
         <div style={{ padding: '20px' }}>
-            <h2>Поиск друзей с сервера массив и в локалке сторить будем</h2>
+            <h2>Поиск друзей</h2>
             <input
                 type="text"
                 placeholder="Введите имя друга..."

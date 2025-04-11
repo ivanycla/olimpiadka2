@@ -1,14 +1,14 @@
 import React, { useState } from "react";  
 import { Link,useNavigate } from "react-router-dom";  
 import styles from "../styles/Login.module.css";  
-import { useNavigate } from "react-router-dom";
+
 const Login = () => {  
     const [email, setEmail] = useState("");  
     const [pass, setPass] = useState("");  
     const [isLoading, setIsLoading] = useState(false);  
     const navigate = useNavigate();  
     // const [error, setError] = useState("");  
-    const navigate = useNavigate();  
+     
     const [error, setError] = useState("");  
 
     const handleSubmit = async (e) => {  
