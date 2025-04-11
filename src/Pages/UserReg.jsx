@@ -16,9 +16,16 @@ const UserReg = () => {
         setIsLoading(true);  
         setError("");  
 
-        if (pass === confirmPass && regex.test(pass)) {  
-            alert("Отправляем на сервачочеккекекекекек");  
-            navigate("/login")
+        if (pass === confirmPass && regex.test(pass)) { 
+            if(localStorage.getItem("email") === email){
+                alert(`чел уже зареган бож я крутой кибербезопасник поэтому если ты забыл пароль то вот: ${localStorage.getItem("pass")}`)
+            } 
+            else {
+                localStorage.setItem("email", email)
+                localStorage.setItem("pass", pass)
+                alert("Отправляем на сервачочеккекекекекек");  
+                navigate("/login")
+            }
         } else {  
             if (pass !== confirmPass) {  
                 setError("Пароли не совпадают");  

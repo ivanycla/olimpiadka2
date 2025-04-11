@@ -5,6 +5,7 @@ import Login from './Pages/Login';
 import UserReg from './Pages/UserReg';
 import OrgReg from './Pages/OrgReg';
 import UserPage from './Pages/UserPage';
+import Profile from './Pages/Profile';
 function App() {
   return (
     <div className="App">
@@ -25,7 +26,7 @@ function App() {
       <Route path='/UserPage' element={<UserPage/>}/>{/* '/UserPage/:userId' */}
     </Routes>
     <Routes>
-      <Route path='/Profile/' element={<UserPage/>}/>{/* '/Profile/:userId' */}
+      <Route path='/Profile/' element={<Profile/>}/>{/* '/Profile/:userId' */}
     </Routes>
     </BrowserRouter>
     </div>

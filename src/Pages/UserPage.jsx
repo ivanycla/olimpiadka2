@@ -55,7 +55,7 @@ const UserPage = () => {
         title: event.name,
         info: event.info
     }));
-    const handleClick=()=>{
+    const handleProfileClick=()=>{
         navigate("/Profile")//navigate("/Profile/{userId},{{state:userId}}");
     }
     const handleFindFriend= () =>{
@@ -64,7 +64,7 @@ const UserPage = () => {
     return (
         <div className="guest-page">
             <header style={{ padding: "20px", display: "flex", justifyContent: "space-between" }}>
-                <button onClick={handleClick}>
+                <button onClick={handleProfileClick}>
                     Профиль
                     </button>
                     <button onClick={handleFindFriend}>
