@@ -1,5 +1,5 @@
 import React, { useState } from "react";  
-import { Link } from "react-router-dom";  
+import { Link,useNavigate } from "react-router-dom";  
 import styles from "../styles/Login.module.css";  
 import { useNavigate } from "react-router-dom";
 const Login = () => {  
@@ -7,11 +7,20 @@ const Login = () => {
     const [pass, setPass] = useState("");  
     const [isLoading, setIsLoading] = useState(false);  
     const navigate = useNavigate();  
+    // const [error, setError] = useState("");  
+    const navigate = useNavigate();  
     const [error, setError] = useState("");  
 
     const handleSubmit = async (e) => {  
         e.preventDefault(); 
         setIsLoading(true);   
+        // setError("");  
+        if(localStorage.getItem("email") === email && localStorage.getItem("pass") === pass){
+            navigate('/UserPage')
+        }
+        else alert("Неверны пароль или почта, гадай сам, бож")
+        
+        // alert("на сервер отправлять будем ззапрос ");//тут запрос на сервер взять от туда юзерid  засторить локально? при навигации на профиль юзерid  отправиь запрос на сервер найти по юзер id???  
         
 
         alert("на сервер отправлять будем ззапрос ");//тут запрос на сервер взять от туда юзерid  засторить локально? при навигации на профиль юзерid  отправиь запрос на сервер найти по юзер id???  
@@ -22,7 +31,7 @@ const Login = () => {
 
     return (  
         <div className={styles.container}>  
-            <form onSubmit={handleSubmit} className={styles.form}>  
+            <form className={styles.form}>  
                 <p className={styles.title}>Войти</p>  
                 <label className={styles.label}>Почта</label>  
                 <input  
@@ -41,7 +50,7 @@ const Login = () => {
                     className={styles.input}  
                 />  
                 <Link to="/UserPage">
-                <button type="submit" className={styles.button} disabled={isLoading}>  
+                <button type="submit" className={styles.button} onClick={(e) => handleSubmit(e)} disabled={isLoading}>  
                     {isLoading ? 'Загрузка...' : 'Войти'}  
                 </button>  
                 </Link>
