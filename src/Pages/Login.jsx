@@ -18,8 +18,11 @@ const Login = () => {
         if(localStorage.getItem("email") === email && localStorage.getItem("pass") === pass){
             navigate('/UserPage')
         }
-        else alert("Неверны пароль или почта, гадай сам, бож")
         
+        else alert("Неверны пароль или почта, гадай сам, бож")
+        if(email==="zalupa@mail.ru"&&pass==="Zalupa1"){
+            navigate("/OrgPage")
+        }
         // alert("на сервер отправлять будем ззапрос ");//тут запрос на сервер взять от туда юзерid  засторить локально? при навигации на профиль юзерid  отправиь запрос на сервер найти по юзер id???  
         
 

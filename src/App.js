@@ -6,6 +6,8 @@ import UserReg from './Pages/UserReg';
 import OrgReg from './Pages/OrgReg';
 import UserPage from './Pages/UserPage';
 import Profile from './Pages/Profile';
+import Org from './Pages/Org';
+import ProfileOrg from './Pages/ProfileOrg';
 function App() {
   return (
     <div className="App">
@@ -27,6 +29,12 @@ function App() {
     </Routes>
     <Routes>
       <Route path='/Profile/' element={<Profile/>}/>{/* '/Profile/:userId' */}
+    </Routes>
+    <Routes>
+      <Route path='/OrgPage/' element={<Org/>}/>{/* '/Profile/:userId' */}
+    </Routes>
+    <Routes>
+      <Route path='/ProfileOrg/' element={<ProfileOrg/>}/>{/* '/Profile/:userId' */}
     </Routes>
     </BrowserRouter>
     </div>

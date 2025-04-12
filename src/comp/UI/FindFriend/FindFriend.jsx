@@ -13,7 +13,7 @@ const FindFriend = () => {
         "лазовский"
     ]);
 
-    // Загрузка сохраненных друзей при монтировании
+   
     useEffect(() => {
         const savedFriends = JSON.parse(localStorage.getItem("friends")) || [];
         setAddedFriends(savedFriends);

@@ -23,7 +23,8 @@ const Profile = () => {
 
     const saveInfo = () => {
         localStorage.setItem("bio", bio);
-    };
+    }; 
+    
 
     return (
         <div className="profile-container">
@@ -52,31 +53,19 @@ const Profile = () => {
                     ))}
                 </div>
             </div>
-<<<<<<< HEAD
 
             <div style={{ margin: "10px 0" }}>
-=======
-         <div style={{ margin: "10px 0" }}>
->>>>>>> 288fc2f3f783e8a1f199976ea5318aeb3665c7e5
                 <input 
             type="checkbox" 
             name="flag" 
             id="flag" 
             onChange={(e) => setFavoriteEventFlag(e.target.checked)}
-<<<<<<< HEAD
   />
   <label htmlFor="flag" style={{ marginLeft: 8 }}>
    показать в избранное
   </label>
                 </div>
 
-=======
-                 />
-            <label htmlFor="flag" style={{ marginLeft: 8 }}>
-                показать в избранное
-            </label>
-                </div>
->>>>>>> 288fc2f3f783e8a1f199976ea5318aeb3665c7e5
         <div className="events-list">
           {favoriteEventFlag ? (
             favoriteEvent.length > 0 ? (

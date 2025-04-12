@@ -1,0 +1,59 @@
+.form {  
+    max-width: 600px;  
+    margin: auto;  
+    padding: 20px;  
+    border: 1px solid #ccc;  
+    border-radius: 8px;  
+    background-color: #f9f9f9;  
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);  
+  }  
+  
+  .header {  
+    color: #007bff;  
+    text-align: center;  
+    margin-bottom: 20px;  
+  }  
+  
+  .label {  
+    margin-top: 10px;  
+    font-weight: bold;  
+  }  
+  
+  .inputField {  
+    width: 100%;  
+    padding: 10px;  
+    margin-bottom: 15px;  
+    border: 1px solid #ccc;  
+    border-radius: 4px;  
+  }  
+  
+  .textareaField {  
+    width: 100%;  
+    padding: 10px;  
+    margin-bottom: 15px;  
+    border: 1px solid #ccc;  
+    border-radius: 4px;  
+    resize: vertical; 
+  }  
+  
+  .selectField {  
+    width: 100%;  
+    padding: 10px;  
+    margin-bottom: 15px;  
+    border: 1px solid #ccc;  
+    border-radius: 4px;  
+  }  
+  
+  .button {  
+    padding: 10px 15px;  
+    color: white;  
+    background-color: #007bff;  
+    border: none;  
+    border-radius: 4px;  
+    cursor: pointer;  
+    transition: background-color 0.3s;  
+  }  
+  
+  .button:hover {  
+    background-color: #0056b3;  
+  }  
