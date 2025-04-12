@@ -53,6 +53,18 @@ const Profile = () => {
                 </div>
             </div>
 
+            <div style={{ margin: "10px 0" }}>
+                <input 
+            type="checkbox" 
+            name="flag" 
+            id="flag" 
+            onChange={(e) => setFavoriteEventFlag(e.target.checked)}
+  />
+  <label htmlFor="flag" style={{ marginLeft: 8 }}>
+   показать в избранное
+  </label>
+                </div>
+
         <div className="events-list">
           {favoriteEventFlag ? (
             favoriteEvent.length > 0 ? (
