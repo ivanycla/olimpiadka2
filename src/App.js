@@ -8,6 +8,9 @@ import UserPage from './Pages/UserPage';
 import Profile from './Pages/Profile';
 import Org from './Pages/Org';
 import ProfileOrg from './Pages/ProfileOrg';
+import ProfileModer from './Pages/ProfileModer';
+import Moder from './Pages/Moder';
+import ModaraitedProfile from './Pages/ModaraitedProfile';
 function App() {
   return (
     <div className="App">
@@ -36,6 +39,16 @@ function App() {
     <Routes>
       <Route path='/ProfileOrg/' element={<ProfileOrg/>}/>{/* '/Profile/:userId' */}
     </Routes>
+    <Routes>
+      <Route path='/ModerProfile/' element={<ProfileModer/>}/>{/* '/Profile/:userId' */}
+    </Routes>
+    <Routes>
+      <Route path='/Moder/' element={<Moder/>}/>{/* '/Profile/:userId' */}
+    </Routes>
+    <Routes>
+      <Route path='/moderaitProfile/' element={<ModaraitedProfile/>}/>{/* '/Profile/:userId' */}
+    </Routes>
+   
     </BrowserRouter>
     </div>
   );

@@ -4,7 +4,7 @@ import CardList from "../comp/UI/CardList/CardList.jsx";
 import Map from "../comp/UI/Map/Map.jsx";
 import FindFriend from "../comp/UI/FindFriend/FindFriend.jsx";
 import FilterButton from "../comp/UI/FilterButton/FilterButton.jsx";
-
+import Notification from "../comp/UI/Notification/Notifcication.jsx";
 const Org = () => {
     const [mock, setMock] = useState([
         {
@@ -45,7 +45,7 @@ const Org = () => {
         }
     ]);
     
-
+    const [flagNotif,setFlagNotif]=useState(false);
     const navigate = useNavigate();
     const [flagFindFriend,setFlagFindFriend]=useState(false);
     const [isLog,setIsLog]=useState(true);
@@ -82,7 +82,17 @@ const Org = () => {
     <FindFriend />
     <button onClick={() => setFlagFindFriend(false)}>Закрыть</button>
   </div>
-)}
+)} <button
+onClick={()=>setFlagNotif(true)}
+>уведомления</button>
+{
+    flagNotif &&(
+        <Notification
+        flagNotif={flagNotif}
+        onClose={()=>setFlagNotif(false)}
+        />
+    )
+}
             </header>
             
             <div style={{ padding: "20px" }}>
