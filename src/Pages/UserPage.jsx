@@ -1,118 +1,189 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+// src/pages/UserPage.jsx
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+    getEvents, getMyParticipatingEvents, getMyFavoriteEvents,
+    registerForEvent, unregisterFromEvent, addEventToFavorites, removeEventFromFavorites
+} from "../api/api";
 import CardList from "../comp/UI/CardList/CardList.jsx";
-import Map from "../comp/UI/Map/Map.jsx";
-import FindFriend from "../comp/UI/FindFriend/FindFriend.jsx";
+import MapComponent from "../comp/UI/Map/Map.jsx"; // <-- ИСПРАВЛЕН ИМПОРТ
 import FilterButton from "../comp/UI/FilterButton/FilterButton.jsx";
-import Notification from "../comp/UI/Notification/Notifcication.jsx";
+import AlertReg from "../comp/UI/AlertReg/AlertReg.jsx"; // <-- ДОБАВЛЕН ИМПОРТ AlertReg
+import styles from '../styles/UserPage.module.css'; // Используем стили UserPage
+
 const UserPage = () => {
-    const [mock, setMock] = useState([
-        {
-            name: "Концерт маканчика",
-            description: `Подо мной M5, Asphalt 8...`,
-            format: "Оффлайн",
-            place: "Минск, пр. Независимости, 58",
-            coordinates: { lat: 53.902257, lng: 27.561824 },
-            duration: "Жалко что не всю жизни",
-            date: "03.05.2025",
-            info: "Подо мной M5, Asphalt 8...",
-            tags: ["offline", "macan", "music"],
-            img: "https://cdn.promodj.com/afs/4f675099712b583994da2c9fe5782c7c12%3Aresize%3A2000x2000%3Asame%3Ab3b350"
-        },
-        {
-            name: "Концерт иваназоло",
-            description: `Лаванда, меня уносит правда...`,
-            format: "Оффлайн",
-            place: "Минск, ул. Немига, 5",
-            coordinates: { lat: 53.904539, lng: 27.561523 }, 
-            duration: "Жалко что не всю жизни",
-            date: "10.05.2025",
-            info: "Лаванда, меня уносит правда",
-            tags: ["offline", "ivanzolo", "music"],
-            img: "https://uznayvse.ru/images/content/2022/3/blogger-ivan-zolo_100.jpg"
-        },
-        {
-            name: "Пиздим лазовского",
-            description: `Та просто отпизидим его`,
-            format: "Оффлайн",
-            place: "БГАС, Минск",
-            coordinates: { lat: 53.930887, lng: 27.651634 },
-            duration: "Жалко что не всю жизни",
-            date: "08.04.2025",
-            info: "заебал",
-            tags: ["offline", "fight"],
-            img: "https://sun9-73.userapi.com/impf/mk2xRlNqECIqmVBF9q1xbxY0a6xS5ArgBq5DtA/MxTv32K_9sg.jpg?size=1818x606&quality=95&crop=0,191,1500,500&sign=74cfa2b24e8d68f431fafc9f34b1144c&type=cover_group"
-        }
-    ]);
-    
-
+    // Состояния
+    const [allEvents, setAllEvents] = useState([]); // Все опубликованные события
+    const [isLoading, setIsLoading] = useState(true); // Общий лоадер для начальной загрузки
+    const [error, setError] = useState(null); // Ошибка загрузки событий
+    const [participatingEventIds, setParticipatingEventIds] = useState(new Set()); // ID событий, где участвует
+    const [favoriteEventIds, setFavoriteEventIds] = useState(new Set()); // ID избранных событий
     const navigate = useNavigate();
-    const [flagFindFriend,setFlagFindFriend]=useState(false);
-    const [isLog,setIsLog]=useState(true);
-    const [flagNotif,setFlagNotif]=useState(false);
-    const [filter, setFilter] = useState('all')
-    function handleFilter(e, type){
-        setFilter(type)
-        e.target.className = 'active'
-    }
+    const [filter, setFilter] = useState('all'); // Текущий фильтр
+    const [actionError, setActionError] = useState(null); // Ошибка действий (участие/избранное)
+    const [statusesLoading, setStatusesLoading] = useState(true); // Отдельный лоадер для статусов
 
-    const mapMarkers = mock.map(event => ({
-        lat: event.coordinates.lat,
-        lng: event.coordinates.lng,
-        title: event.name,
-        info: event.info
-    }));
-    const handleProfileClick=()=>{
-        navigate("/Profile")//navigate("/Profile/{userId},{{state:userId}}");
-    }
-    const handleFindFriend= () =>{
-        setFlagFindFriend(true);
-    }
+    // --- Функции Загрузки Данных ---
+    // Загрузка статусов участия и избранного ТЕКУЩЕГО пользователя
+    const fetchUserEventStatuses = useCallback(async (showLoading = true) => {
+        if (showLoading) setStatusesLoading(true);
+        setActionError(null); // Сбрасываем ошибку действий
+        try {
+            console.log("API: Запрос getMyParticipatingEvents и getMyFavoriteEvents");
+            const [participatingResponse, favoritesResponse] = await Promise.all([
+                getMyParticipatingEvents({ page: 0, size: 1000 }), // Загружаем все ID
+                getMyFavoriteEvents({ page: 0, size: 1000 })      // Загружаем все ID
+            ]);
+            const participatingIds = new Set(participatingResponse?.content?.map(event => event.id) || []);
+            const favoriteIds = new Set(favoritesResponse?.content?.map(event => event.id) || []);
+            console.log("Статусы получены:", { participatingIds, favoriteIds });
+            setParticipatingEventIds(participatingIds);
+            setFavoriteEventIds(favoriteIds);
+        } catch (err) {
+            console.error("Ошибка загрузки статусов мероприятий пользователя:", err);
+            // Не сбрасываем статусы при ошибке, чтобы пользователь не видел скачков
+            setActionError(err.message || "Не удалось обновить статусы мероприятий.");
+            if (err.status === 401 || err.status === 403) navigate('/login');
+        } finally {
+            if (showLoading) setStatusesLoading(false);
+        }
+    }, [navigate]);
+
+    // Загрузка ВСЕХ опубликованных событий
+    const fetchAllEvents = useCallback(async () => {
+        // setIsLoading(true); // Основной лоадер управляется из useEffect
+        setError(null);
+        try {
+            console.log("API: Запрос getEvents (UserPage)");
+            const eventsPage = await getEvents({ page: 0, size: 100 }); // Загружаем больше для карты
+            console.log("Ответ getEvents:", eventsPage);
+            setAllEvents(eventsPage?.content || []);
+        } catch (err) {
+            console.error("Ошибка при загрузке мероприятий:", err);
+            setError(err.message || "Не удалось загрузить мероприятия.");
+            if (err.status === 401 || err.status === 403) navigate('/login');
+        }
+        // finally { setIsLoading(false); } // Основной лоадер управляется из useEffect
+    }, [navigate]);
+
+    // --- Эффект Загрузки ---
+     useEffect(() => {
+        if (!localStorage.getItem('accessToken')) { navigate('/login'); return; }
+        console.log("UserPage монтируется, запускаем начальную загрузку...");
+        setIsLoading(true); // Включаем главный лоадер
+        Promise.all([
+             fetchAllEvents(),          // Грузим все события
+             fetchUserEventStatuses(false) // Грузим статусы без показа их лоадера
+        ]).finally(() => {
+             setIsLoading(false); // Выключаем главный лоадер после ВСЕХ запросов
+        });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // Пустой массив зависимостей
+
+    // --- Обработчики для Карточек ---
+    const handleParticipateToggle = useCallback(async (eventId, currentStatus) => {
+        const apiCall = currentStatus ? unregisterFromEvent : registerForEvent;
+        setActionError(null);
+        // Можно добавить оптимистичное обновление UI здесь, если нужно
+        try {
+            await apiCall(eventId);
+            await fetchUserEventStatuses(false); // Перезагружаем статусы без лоадера
+            return true;
+        } catch (err) {
+            console.error("Ошибка изменения статуса участия с UserPage:", err);
+            setActionError(err.message || "Ошибка изменения статуса участия");
+            // Откатить оптимистичное обновление, если оно было
+            return false;
+        }
+    }, [fetchUserEventStatuses]);
+
+    const handleFavoriteToggle = useCallback(async (eventId, currentStatus) => {
+        const apiCall = currentStatus ? removeEventFromFavorites : addEventToFavorites;
+        setActionError(null);
+        // Можно добавить оптимистичное обновление UI здесь
+        try {
+            await apiCall(eventId);
+            await fetchUserEventStatuses(false); // Перезагружаем статусы без лоадера
+            return true;
+        } catch (err) {
+            console.error("Ошибка изменения статуса избранного с UserPage:", err);
+            setActionError(err.message || "Ошибка изменения статуса избранного");
+             // Откатить оптимистичное обновление, если оно было
+            return false;
+        }
+    }, [fetchUserEventStatuses]);
+
+    // --- Обработчики UI ---
+    const handleFilterClick = (type) => { setFilter(type); };
+    const handleProfileClick = () => { navigate("/Profile"); }; // Переход на СВОЙ профиль
+
+    // --- Подготовка данных для карты ---
+    const mapMarkers = allEvents // Используем allEvents
+        .filter(event => event?.location && typeof event.location.latitude === 'number' && typeof event.location.longitude === 'number')
+        .map((event, index) => ({
+            id: event.id || `userpage-event-${index}`, // Уникальный ID
+            lat: event.location.latitude,
+            lng: event.location.longitude,
+            title: event.title || 'Без названия', // Название для подсказки/заголовка
+            // Информация для балуна
+            info: `${event.location.address || event.location.city || ''}\nНачало: ${event.startTime ? new Date(event.startTime).toLocaleString('ru-RU') : 'не указано'}`
+        }));
+    console.log("Подготовленные маркеры для карты (UserPage):", mapMarkers);
+
+    // --- Отображение ---
     return (
-        <div className="guest-page">
-            <header style={{ padding: "20px", display: "flex", justifyContent: "space-between" }}>
-                <button onClick={handleProfileClick}>
+        <div className={styles.userPageContainer}>
+            <header className={styles.header}>
+                 <button className={styles.button} onClick={handleProfileClick}>
                     Профиль
-                    </button>
-                    <button onClick={handleFindFriend}>
-                        найти друга
-                    </button>
-                    {flagFindFriend && (
-            <div className="find-friend-container">
-                <FindFriend />
-            <button onClick={() => setFlagFindFriend(false)}>Закрыть</button>
-                </div>
-)}         
-            <button
-            onClick={()=>setFlagNotif(true)}
-            >уведомления</button>
-            {
-                flagNotif &&(
-                    <Notification
-                    flagNotif={flagNotif}
-                    onClose={()=>setFlagNotif(false)}
-                    />
-                )
-            }
+                </button>
+                 {/* Другие кнопки в хедере можно добавить здесь */}
             </header>
-            
-            <div style={{ padding: "20px" }}>
-                {/* Карта */}
-                <div style={{ marginBottom: "40px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}>
-                    <Map markers={mapMarkers} />
-                </div>
-                
-                <div style={{ marginTop: "30px", padding: "20px", background: "#f8f9fa" }}>
-                    <FilterButton onClick={() => {setFilter('all')}} isActive={filter === 'all'}>Все</FilterButton>
-                    <FilterButton onClick={() => {setFilter('offline')}} isActive={filter === 'offline'}>Оффлайн</FilterButton>
-                    <FilterButton onClick={() => {setFilter('online')}} isActive={filter === 'online'}>Онлайн</FilterButton>
-                    <FilterButton onClick={() => {setFilter('music')}} isActive={filter === 'music'}>Музыка</FilterButton>
-                </div>
-                
-                <CardList events={mock}
-                isLog={true} filter={filter}
-                //userId={userdId}
-                />
+
+            <div className={styles.mainContent}>
+                {/* Показываем ошибку действия (участие/избранное) */}
+                {actionError && <AlertReg isVisible={true} type="error" message={actionError} onClose={() => setActionError(null)} />}
+                {/* Показываем общую ошибку загрузки */}
+                {error && <AlertReg isVisible={true} type="error" message={error} onClose={() => setError(null)} />}
+                {/* Показываем общий лоадер */}
+                {isLoading && <p className={styles.loadingMessage}>Загрузка данных...</p>}
+
+                {/* Карта (показываем, если нет ошибки загрузки событий) */}
+                {!error && (
+                     <div className={styles.mapContainer}>
+                         {/* Можно добавить лоадер и сюда, если карта грузится дольше событий */}
+                         <MapComponent markers={mapMarkers} />
+                     </div>
+                 )}
+
+                {/* Контент под картой (показываем, если нет общей загрузки и ошибки) */}
+                {!isLoading && !error && (
+                    <>
+                        <div className={styles.filterList}>
+                            <h1>Мероприятия</h1>
+                            <FilterButton onClick={() => handleFilterClick('all')} isActive={filter === 'all'}>Все</FilterButton>
+                            <FilterButton onClick={() => handleFilterClick('offline')} isActive={filter === 'offline'}>Оффлайн</FilterButton>
+                            <FilterButton onClick={() => handleFilterClick('online')} isActive={filter === 'online'}>Онлайн</FilterButton>
+                             {/* Добавьте остальные фильтры по тегам, если они нужны */}
+                        </div>
+
+                        {allEvents.length > 0 ? (
+                            <CardList
+                                events={allEvents} // Передаем все события
+                                isLog={true}      // Пользователь авторизован
+                                filter={filter}     // Передаем фильтр
+                                isOrganizerView={false} // Обычный вид карточки
+                                participatingEventIds={participatingEventIds} // Передаем ID участий
+                                favoriteEventIds={favoriteEventIds}       // Передаем ID избранных
+                                onParticipateToggle={handleParticipateToggle} // Обработчик участия
+                                onFavoriteToggle={handleFavoriteToggle}       // Обработчик избранного
+                                // onInviteClick можно добавить позже, если нужна функция приглашения
+                            />
+                        ) : (
+                            <p className={styles.noEventsMessage}>Мероприятия не найдены.</p>
+                        )}
+                    </>
+                )}
             </div>
         </div>
     );

@@ -1,0 +1,36 @@
+/* src/styles/FindUsersPage.module.css (НОВЫЙ ФАЙЛ) */
+
+.pageContainer {
+    max-width: 700px; /* Ограничим ширину для страницы поиска */
+    margin: 30px auto;
+    padding: 20px;
+    font-family: sans-serif;
+}
+
+.backButton {
+    padding: 8px 15px;
+    margin-bottom: 25px; /* Отступ от компонента поиска */
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background-color 0.2s ease;
+}
+
+.backButton:hover {
+    background-color: #e0e0e0;
+}
+
+.error {
+    color: #dc3545;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Стили для самого FindFriend будут браться из FindFriend.module.css, */
+/* но можно переопределить или добавить контейнерные стили здесь, если нужно */

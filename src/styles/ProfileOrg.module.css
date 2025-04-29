@@ -1,0 +1,119 @@
+
+.profileContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  color: white; 
+}
+
+h1, h2, p, .email, .noEventsMessage {
+  color: white !important;
+  text-align: center;
+}
+
+
+.infoSection {
+  background: #2d2d2d;
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 2rem auto;
+  border: 1px solid #404040;
+  width: 90%;
+  max-width: 600px;
+}
+
+/* Контейнер кнопок */
+.profileActions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+  justify-content: center; 
+}
+
+
+.button {
+  background: white;
+  color: #2d2d2d !important; 
+  border: 1px solid #ddd;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  margin: 0 auto; 
+}
+
+
+.createButton:hover {
+  background: #f0f0f0 !important;
+  color: #2d2d2d !important;
+  border-color: #ddd;
+}
+
+/* Стили для формы редактирования */
+.editForm {
+  background: #3a3a3a;
+  padding: 2rem;
+  border-radius: 12px;
+  margin: 2rem auto;
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+}
+
+.editForm .inputField {
+  background: #2d2d2d;
+  color: white;
+  border: 1px solid #404040;
+  padding: 0.8rem;
+  width: 100%;
+  border-radius: 6px;
+  margin: 1rem 0;
+}
+.inputField {
+  background: #2d2d2d;
+  color: white;
+  border: 1px solid #404040;
+  padding: 0.8rem;
+  width: 100%;
+  border-radius: 6px;
+  margin: 1rem 0;
+}
+.editButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .profileActions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .button {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .infoSection {
+    padding: 1.5rem;
+  }
+}
+
+/* Секция мероприятий */
+.eventsSection {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.listContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 1.5rem auto;
+  max-width: 1200px;
+}

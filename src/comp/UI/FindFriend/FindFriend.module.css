@@ -1,0 +1,417 @@
+/* src/comp/UI/FindFriend/FindFriend.module.css */
+
+.findFriendModal {
+    position: fixed; /* Или absolute, в зависимости от родителя */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Полупрозрачный фон */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Выше других элементов */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.modalContent {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh; /* Ограничиваем высоту */
+    display: flex;
+    flex-direction: column;
+    position: relative; /* Для позиционирования кнопки закрытия */
+}
+
+.closeButton {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #aaa;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+}
+.closeButton:hover {
+    color: #333;
+}
+
+
+.modalContent h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+
+.searchForm {
+    display: flex;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+
+.searchInput {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.searchButton {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #5c67f2;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.searchButton:hover:not(:disabled) {
+    background-color: #4a54e1;
+}
+
+.searchButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.error {
+    color: #dc3545;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.resultsContainer {
+    flex-grow: 1; /* Занимает оставшееся место */
+    overflow-y: auto; /* Добавляет скролл, если список длинный */
+    border-top: 1px solid #eee;
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+.resultsList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.resultItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 5px;
+    border-bottom: 1px solid #eee;
+}
+.resultItem:last-child {
+    border-bottom: none;
+}
+
+
+.userInfo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap; /* Перенос на мобильных */
+}
+
+.userName {
+    font-weight: bold;
+    color: #333;
+}
+
+.userId {
+    font-size: 0.85em;
+    color: #777;
+}
+
+.profileLink {
+    font-size: 0.85em;
+    color: #007bff;
+    text-decoration: none;
+    margin-left: 5px;
+}
+.profileLink:hover {
+    text-decoration: underline;
+}
+
+
+.actionArea {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 130px; /* Чтобы кнопки не прыгали */
+    justify-content: flex-end;
+}
+
+.addButton {
+    padding: 5px 10px;
+    font-size: 0.9em;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+.addButton:hover:not(:disabled) {
+    background-color: #218838;
+}
+.addButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+
+.addError {
+    color: #dc3545;
+    font-size: 0.8em;
+}
+
+.alreadyFriend,
+.isYou {
+    font-size: 0.9em;
+    color: #6c757d;
+    font-style: italic;
+}
+/* В оба файла можно добавить что-то вроде: */
+.friendLink,
+.profileLinkFromName {
+    text-decoration: none;
+    color: #337ab7; /* Или ваш цвет ссылок */
+    cursor: pointer;
+}
+.friendLink:hover,
+.profileLinkFromName:hover {
+    text-decoration: underline;
+    color: #23527c;
+}
+.profileLinkFromName .userName { /* Чтобы имя внутри ссылки сохранило стиль */
+     font-weight: bold;
+     color: inherit; /* Наследуем цвет от ссылки */
+}
+/* Оверлей для затемнения */
+.modalOverlay {
+    position: fixed; /* Фиксированное позиционирование */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Выше остального контента */
+}
+
+/* Основной контейнер модального окна */
+.modalContent {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px; /* Максимальная ширина */
+    position: relative; /* Для позиционирования кнопки закрытия */
+    max-height: 80vh; /* Макс высота */
+    display: flex;
+    flex-direction: column;
+}
+
+.modalContent h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #333;
+}
+
+/* Кнопка закрытия */
+.closeButton {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #888;
+    cursor: pointer;
+    line-height: 1; /* Чтобы крестик был по центру */
+}
+
+.closeButton:hover {
+    color: #333;
+}
+
+/* Форма поиска */
+.searchForm {
+    display: flex;
+    margin-bottom: 1.5rem;
+    gap: 0.5rem; /* Пространство между инпутом и кнопкой */
+}
+
+.searchInput {
+    flex-grow: 1; /* Занимает доступное пространство */
+    padding: 0.7rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.searchButton {
+    padding: 0.7rem 1.2rem;
+    background-color: var(--primary-color); /* Ваш основной цвет */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s ease;
+}
+
+.searchButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.searchButton:not(:disabled):hover {
+    background-color: var(--primary-hover-color); /* Ваш цвет при наведении */
+}
+
+/* Контейнер результатов */
+.resultsContainer {
+    flex-grow: 1; /* Занимает оставшееся место */
+    overflow-y: auto; /* Добавляет прокрутку, если результатов много */
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 0.5rem;
+    min-height: 100px; /* Минимальная высота, чтобы было видно */
+    background-color: #f9f9f9;
+}
+
+.resultsList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Элемент списка результатов */
+.resultItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 0.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.resultItem:last-child {
+    border-bottom: none;
+}
+
+.userInfo {
+    display: flex;
+    flex-direction: column; /* Имя и username друг под другом */
+    gap: 0.1rem;
+    flex-grow: 1; /* Занимает место до кнопки */
+    margin-right: 1rem; /* Отступ справа от кнопки */
+}
+
+.profileLinkFromName {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+.profileLinkFromName:hover {
+     text-decoration: underline;
+}
+
+
+.userName {
+    font-weight: 500;
+}
+
+.userUsername { /* Стиль для email/username */
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.userId { /* Стиль для ID, если нужно */
+    font-size: 0.75rem;
+    color: #999;
+    margin-left: 0.5rem; /* Небольшой отступ */
+}
+
+.organizerLabel {
+    font-size: 0.8rem;
+    color: #888;
+    margin-left: 0.5rem;
+    font-style: italic;
+}
+.organizerLabelInfo { /* Отдельный стиль для текста справа */
+    font-size: 0.9rem;
+    color: #666;
+    font-style: italic;
+}
+
+
+.actionArea {
+    display: flex;
+    align-items: center;
+    min-width: 120px; /* Чтобы кнопки не прыгали по ширине */
+    justify-content: flex-end;
+}
+
+.addButton {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    background-color: #52c41a; /* Зеленый */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    white-space: nowrap; /* Чтобы текст не переносился */
+}
+
+.addButton:disabled {
+    background-color: #b7eb8f;
+    cursor: not-allowed;
+}
+
+.addButton:not(:disabled):hover {
+    background-color: #389e0d;
+}
+
+.addError {
+    color: #ff4d4f;
+    font-size: 0.8rem;
+    margin-left: 0.5rem;
+}
+
+.alreadyFriend {
+    font-size: 0.9rem;
+    color: #555;
+    font-style: italic;
+}
+
+/* Сообщения об ошибках и статусах */
+.loadingMessage, .infoMessage, .noResultsMessage {
+    text-align: center;
+    color: #666;
+    padding: 1rem;
+}
+.error {
+    color: #ff4d4f;
+    text-align: center;
+    margin-bottom: 1rem;
+}

@@ -1,122 +1,146 @@
+/* OrgReg.module.css */
+
+/* --- Основной контейнер --- */
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 20px;
-    background-color: #f0f2f5;
-  }
-  
-  .form {
-    width: 100%;
-    max-width: 400px;
-    padding: 2rem;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .form h2 {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    color: #1a1a1a;
-    font-size: 1.8rem;
-  }
-  
-  .form label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: #333;
-  }
-  
-  .form input[type="email"],
-  .form input[type="text"],
-  .form input[type="password"] {
-    width: 100%;
-    padding: 0.8rem;
-    margin-bottom: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
-  }
-  
-  .form input[type="file"] {
-    width: 100%;
-    margin-bottom: 1rem;
-    padding: 0.5rem 0;
-  }
-  
-  .form input:focus {
-    outline: none;
-    border-color: #1890ff;
-    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
-  }
-  
-  .form button {
-    width: 100%;
-    padding: 1rem;
-    background-color: #1890ff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .form button:hover {
-    background-color: #40a9ff;
-  }
-  
-  .form button:disabled {
-    background-color: #8cc8ff;
-    cursor: not-allowed;
-  }
-  
-  .error {
-    color: #ff4d4f;
-    margin-bottom: 1rem;
-    padding: 0.5rem;
-    background: #fff1f0;
-    border: 1px solid #ffccc7;
-    border-radius: 5px;
-    text-align: center;
-  }
-  
-  /* Стили для кастомного поля загрузки файла */
-  .fileInput {
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 1rem;
-  }
-  
-  .fileInput input[type="file"] {
-    position: absolute;
-    left: 0;
-    top: 0;
-    opacity: 0;
-    cursor: pointer;
-    height: 100%;
-    width: 100%;
-  }
-  
-  .fileInput label {
-    display: block;
-    padding: 0.8rem;
-    background: #fafafa;
-    border: 1px dashed #d9d9d9;
-    border-radius: 5px;
-    text-align: center;
-    color: #666;
-    cursor: pointer;
-    transition: border-color 0.3s;
-  }
-  
-  .fileInput label:hover {
-    border-color: #1890ff;
-    color: #1890ff;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Центрирование формы */
+  min-height: 100vh;
+  padding: 20px;
+  background-color: #1a1a1a; /* Темный фон страницы, если нужен */
+}
+
+/* --- Форма --- */
+.form {
+  width: 100%;
+  max-width: 450px; /* Сделаем чуть шире для доп. полей */
+  padding: 2rem;
+  background-color: rgb(57, 57, 57); /* Темно-серый фон формы */
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* Более заметная тень */
+  color: #d5d5d5; /* Светлый текст по умолчанию */
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; убрано, т.к. label и input должны быть по ширине */
+}
+
+.form h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #ffffff; /* Белый заголовок */
+  font-size: 1.8rem;
+}
+
+.form label {
+  display: block; /* Занимает всю ширину */
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #d5d5d5;
+  text-align: left; /* Выравнивание текста label по левому краю */
+  width: 100%; /* Явно указываем ширину */
+}
+
+.form input[type="email"],
+.form input[type="text"],
+.form input[type="password"] {
+  width: 100%;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border: 1px solid #555; /* Темная рамка */
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: #444; /* Темный фон инпута */
+  color: #e0e0e0; /* Светлый текст в инпуте */
+  box-sizing: border-box; /* Чтобы padding не увеличивал ширину */
+}
+
+.form input:focus {
+  outline: none;
+  border-color: #007bff; /* Синий акцент при фокусе */
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Свечение при фокусе */
+}
+
+.form input::placeholder { /* Стили для плейсхолдера */
+  color: #888;
+}
+
+/* --- Стили для загрузки файла --- */
+.fileInputContainer {
+  position: relative; /* Для позиционирования скрытого инпута */
+  margin-bottom: 1rem;
+  display: block;
+  width: 100%;
+}
+
+/* Скрываем стандартный input[type="file"] */
+.inputFile {
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+  width: 0.1px;
+  height: 0.1px;
+}
+
+/* Стилизуем label как кнопку/область выбора */
+.fileLabel {
+  display: block; /* Занимает всю ширину */
+  padding: 0.8rem;
+  background-color: #555; /* Цвет фона кнопки */
+  color: #d5d5d5; /* Цвет текста */
+  border: 1px dashed #777; /* Пунктирная рамка */
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+/* Эффект при наведении на область выбора файла */
+.fileLabel:hover {
+  background-color: #666;
+  border-color: #007bff; /* Синий акцент */
+  color: #ffffff;
+}
+
+/* --- Кнопка отправки --- */
+.form button[type="submit"] {
+  width: 100%;
+  padding: 1rem;
+  background-color: #007bff; /* Основной синий цвет */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem; /* Отступ сверху */
+}
+
+.form button[type="submit"]:hover:not(:disabled) {
+  background-color: #0056b3; /* Темнее при наведении */
+}
+
+.form button[type="submit"]:disabled {
+  background-color: #0056b3; /* Можно сделать темнее */
+  opacity: 0.65; /* Полупрозрачность */
+  cursor: not-allowed;
+}
+
+/* --- Ссылки под формой --- */
+/* Стили для <p> и <Link> берутся из вашего предыдущего кода, */
+/* если они там определены глобально или в UserReg/Login стилях */
+/* Если нет, добавьте их сюда */
+
+/* --- Стили для AlertReg (Предполагается, что он имеет свой CSS) --- */
+/* Можно добавить отступ, если AlertReg показывается над формой */
+.form > :global(.alert-reg-container) { /* Пример селектора, если AlertReg имеет такой класс */
+  width: 100%; /* Занять всю ширину формы */
+  margin-bottom: 1rem; /* Отступ снизу */
+  box-sizing: border-box;
+}

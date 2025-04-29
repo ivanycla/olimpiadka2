@@ -1,79 +1,118 @@
-/* UserReg.module.css */  
+/* UserReg.module.css */
 
-:root {  
-    --primary-color: #007BFF;  
-    --secondary-color: #0056b3;  
-    --background-color: #f5faff;  
-    --error-color: #d9534f;  
-    --text-color: #333;  
-}  
+:root {
+    /* Темно-серая тема */
+    --primary-color: #4a90e2;         /* Синий акцент (можно оставить ваш #007BFF или подобрать другой) */
+    --secondary-color: #357abd;       /* Более темный синий для hover */
+    --background-color: #1e2023;      /* Темно-серый фон страницы */
+    --error-color: #ff6b6b;           /* Красный для ошибок */
+    --text-color: #e0e0e0;           /* Светло-серый основной текст */
+    --form-bg-color: #454546;        /* Фон самой формы (немного светлее фона страницы) */
+    --input-bg-color: #49505c;       /* Фон полей ввода */
+    --input-border-color: #555;       /* Рамка полей ввода */
+    --input-text-color: #ffffff;       /* Цвет текста в полях ввода (белый) */
+    --box-shadow-color: rgba(0, 0, 0, 0.4); /* Тень (можно сделать темнее) */
+    --button-text-color: #ffffff;      /* Цвет текста на кнопке (белый) */
+    --button-disabled-bg: #5a626e;    /* Фон неактивной кнопки */
+    --button-disabled-text: #adb5bd; /* Текст неактивной кнопки */
+}
 
-.container {  
-    max-width: 450px;  
-    margin: 50px auto;  
-    padding: 30px;  
-    border-radius: 12px;  
-    background: white;  
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);  
-}  
+/* Используем классы из вашего ПЕРВОГО примера */
+.container {
+    max-width: 450px;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 12px;
+    background: var(--form-bg-color); /* Используем переменную для фона формы */
+    box-shadow: 0 4px 20px var(--box-shadow-color); /* Используем переменную для тени */
+    color: var(--text-color); /* Основной цвет текста для контейнера */
+}
 
-.form {  
-    display: flex;  
-    flex-direction: column;  
-}  
+.form {
+    display: flex;
+    flex-direction: column;
+}
 
-h2 {  
-    text-align: center;  
-    margin-bottom: 20px;  
-    color: var(--primary-color);  
-    font-weight: 600;  
-}  
+/* Заголовок h2 */
+.container h2 { /* Применяем стиль к h2 внутри .container */
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--primary-color); /* Основной синий акцент */
+    font-weight: 600;
+}
 
-label {  
-    margin-bottom: 5px;  
-    font-weight: bold;  
-    color: var(--text-color);  
-}  
+/* Лейблы */
+.container label { /* Применяем стиль к label внутри .container */
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: var(--text-color); /* Основной светлый текст */
+}
 
-input {  
-    padding: 12px;  
-    margin-bottom: 15px;  
-    border: 1px solid #ccc;  
-    border-radius: 5px;  
-    transition: border-color 0.3s, box-shadow 0.3s;  
-    font-size: 16px;  
-}  
+/* Поля ввода */
+.container input { /* Применяем стиль к input внутри .container */
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid var(--input-border-color); /* Темная рамка */
+    border-radius: 5px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    font-size: 16px;
+    background-color: var(--input-bg-color); /* Темный фон инпута */
+    color: var(--input-text-color); /* Белый текст в инпуте */
+    box-sizing: border-box;
+}
 
-input:focus {  
-    border-color: var(--primary-color);  
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);  
-    outline: none;  
-}  
+.container input:focus { /* Фокус для полей ввода */
+    border-color: var(--primary-color); /* Синяя рамка при фокусе */
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5); /* Тень цвета primary-color */
+    outline: none;
+}
 
-.error {  
-    color: var(--error-color);  
-    margin: 15px 0;  
-    font-weight: bold;  
-    text-align: center;  
-}  
+/* Сообщения об ошибках */
+.container .error { /* Применяем стиль к .error внутри .container */
+    color: var(--error-color);
+    margin: 15px 0;
+    font-weight: bold;
+    text-align: center;
+}
 
-button {  
-    padding: 12px;  
-    color: white;  
-    background-color: var(--primary-color);  
-    border: none;  
-    border-radius: 5px;  
-    cursor: pointer;  
-    font-size: 16px;  
-    transition: background-color 0.3s, transform 0.2s;  
-}  
+/* Кнопки */
+.container button { /* Применяем стиль к button внутри .container */
+    padding: 12px;
+    color: var(--button-text-color); /* Белый текст */
+    background-color: var(--primary-color); /* Синий фон */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.2s;
+}
 
-button:hover {  
-    background-color: var(--secondary-color);  
-    transform: translateY(-1px);  
-}  
+.container button:hover { /* Наведение на кнопку */
+    background-color: var(--secondary-color); /* Темно-синий фон */
+    transform: translateY(-1px);
+}
 
-button:disabled {  
-    background-color: #a0c4ff;  
-    cursor: not-allowed;  
-}  
+.container button:disabled { /* Неактивная кнопка */
+    background-color: var(--button-disabled-bg); /* Серый фон */
+    color: var(--button-disabled-text); /* Серый текст */
+    cursor: not-allowed;
+    transform: none; /* Убираем эффект подъема */
+}
+
+/* Ссылка для логина (если вы ее добавите) */
+.loginLink {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-color-secondary, #adb5bd); /* Используем вторичный цвет текста */
+}
+
+.loginLink a {
+  color: var(--link-color, #61dafb); /* Используем акцентный цвет для ссылок */
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.loginLink a:hover {
+  text-decoration: underline;
+}

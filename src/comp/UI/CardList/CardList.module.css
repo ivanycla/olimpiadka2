@@ -1,9 +1,43 @@
-/* CardList.module.css */
-.listContainer {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 25px;
-    padding: 25px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
+/* src/comp/UI/CardList/CardList.module.css */
+
+/* Основной контейнер списка карточек */
+.cardList { /* <--- ИСПРАВЛЕНО: Имя класса теперь совпадает с JSX */
+  display: grid; /* Включаем Grid Layout */
+  
+  /* 
+   * Определяем колонки:
+   * auto-fill: Создает столько колонок, сколько влезет.
+   * minmax(300px, 1fr): Каждая колонка будет минимум 300px, 
+   *                    но может растягиваться (1fr) для заполнения места.
+   *                    Карточки будут автоматически переноситься.
+   */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+  
+  /* Расстояние между карточками */
+  gap: 25px; 
+  
+  /* Внутренние отступы самого контейнера списка */
+  padding: 25px; 
+  
+  /* Ограничиваем максимальную ширину и центрируем список на больших экранах */
+  max-width: 1200px; 
+  margin: 0 auto; /* Горизонтальное центрирование */
+}
+
+/* Стили для сообщения, когда список пуст */
+.noEvents {
+  text-align: center; /* Центрируем текст */
+  color: #666; /* Серый цвет текста */
+  padding: 2rem 1rem; /* Добавим отступы сверху/снизу и по бокам */
+  font-style: italic; /* Курсив для выделения */
+  grid-column: 1 / -1; /* Растягиваем на все колонки грида, если вдруг он сработает */
+}
+
+/* 
+   ВАЖНО: Убедись, что в файле src/comp/UI/Card/Card.module.css 
+   для твоего основного класса карточки (например, .card) 
+   НЕ ЗАДАНА фиксированная или процентная ширина (типа `width: 300px;` или `width: 100%;`). 
+   Ширину карточки должен определять grid-контейнер (.cardList) через grid-template-columns.
+   Стили типа border, padding, background, box-shadow, display: flex для *внутреннего* 
+   содержимого карточки - это нормально и должно быть в Card.module.css.
+*/

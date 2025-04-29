@@ -1,5 +1,5 @@
 .container {  
-    background-color: #ffffff; 
+    background-color: #393939;
     padding: 40px;   
     border-radius: 12px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -9,7 +9,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center; 
-    
+    margin-top: 100px;
 }  
 
 .form {  
@@ -26,7 +26,7 @@
 }  
 
 .label {  
-    color: #3A4D6A;
+    color: #d5d5d5;
     font-weight: bold; 
     font-size: 16px; 
 }  
@@ -36,6 +36,7 @@
     border: 1px solid #B0C4DE; 
     border-radius: 6px; 
     outline: none;  
+    box-sizing: border-box;
     transition: border 0.3s ease, box-shadow 0.3s ease; 
 }  
 
@@ -44,22 +45,26 @@
     box-shadow: 0 0 5px rgba(74, 144, 226, 0.5); 
 }  
 
-.button {  
-    background-color: #4A90E2;
-    color: white;  
-    padding: 12px; 
-    border: none;  
-    border-radius: 6px;
-    cursor: pointer;  
+.button{
+    background-color: #ffffff;
+    color: rgb(57, 57, 57);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s ease, transform 0.2s; 
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
-}  
-
-.button:hover {  
-    background-color: #357ABD; 
-    transform: translateY(-2px); 
-}  
+    transition: background-color 0.3s ease;
+  }
+  
+  .button:hover{
+    background-color: #d5d5d5;
+    color: rgb(57, 57, 57);
+  }
+  
+  .button:active {
+    background-color: #cbc7c7;
+    color: rgb(57, 57, 57);
+  } 
 
 .links {  
     margin-top: 20px; 

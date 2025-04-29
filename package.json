@@ -4,13 +4,14 @@
   "private": true,
   "homepage": "https://ivanycla.github.io/olimpiada",
   "dependencies": {
+    "@pbe/react-yandex-maps": "^1.2.5",
     "@react-google-maps/api": "^2.20.6",
     "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.3.0",
+    "@testing-library/react": "^15.0.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.8.4",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-router-dom": "^6.30.0",
     "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4"
@@ -42,7 +43,6 @@
     ]
   },
   "devDependencies": {
-    "cross-env": "^7.0.3",
     "gh-pages": "^6.3.0"
   }
 }

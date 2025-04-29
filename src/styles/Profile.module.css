@@ -1,0 +1,567 @@
+.button{
+    background-color: #ffffff;
+    color: rgb(57, 57, 57);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .button:hover{
+    background-color: #d5d5d5;
+    color: rgb(57, 57, 57);
+  }
+  
+  .button:active {
+    background-color: #cbc7c7;
+    color: rgb(57, 57, 57);
+  } 
+
+  .profileContainer {
+    color: #d5d5d5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .eventList {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .label {
+    color: #d5d5d5;
+    margin: 8px;
+  }
+
+  .mainInfoSection {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-top: 25px;
+  }
+
+  /* .mainInfoSection > div {
+    margin: 20px;
+  } */
+
+  .infoSection {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color:rgb(57, 57, 57);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 0;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    padding: 30px 100px;
+  }
+
+  .friendsSection {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color:rgb(57, 57, 57);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 0;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    padding: 30px 100px;
+    margin-left: 20px;
+  }
+
+  .infoSection input, .infoSection button {
+    max-width: 250px;
+  }
+  .tabs {
+    display: flex;
+    gap: 10px; /* Отступ между кнопками вкладок */
+    margin-bottom: 1.5rem; /* Отступ снизу от вкладок */
+    border-bottom: 2px solid #444; /* Линия под вкладками */
+    padding-bottom: 10px; /* Отступ до линии */
+  }
+  
+  .tabButton {
+    padding: 10px 20px;
+    border: none;
+    background-color: transparent; /* Прозрачный фон по умолчанию */
+    color: #b5b5b5; /* Серый цвет неактивной вкладки */
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 500;
+    border-bottom: 3px solid transparent; /* Прозрачная нижняя граница */
+    transition: color 0.2s ease, border-bottom-color 0.2s ease;
+  }
+  
+  .tabButton:hover {
+    color: #ffffff; /* Белый при наведении */
+  }
+  
+  .tabButton.activeTab { /* Стиль активной вкладки */
+    color: #007bff; /* Синий цвет текста */
+    border-bottom-color: #007bff; /* Синяя линия под активной вкладкой */
+  }
+  /* В оба файла можно добавить что-то вроде: */
+.friendLink,
+.profileLinkFromName {
+    text-decoration: none;
+    color: #337ab7; /* Или ваш цвет ссылок */
+    cursor: pointer;
+}
+.friendLink:hover,
+.profileLinkFromName:hover {
+    text-decoration: underline;
+    color: #23527c;
+}
+.profileLinkFromName .userName { /* Чтобы имя внутри ссылки сохранило стиль */
+     font-weight: bold;
+     color: inherit; /* Наследуем цвет от ссылки */
+}
+.friendItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+.friendItem:last-child {
+   border-bottom: none;
+}
+.friendList {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 15px;
+}
+ .removeFriendButton {
+      background: none;
+      border: none;
+      color: #dc3545;
+      cursor: pointer;
+      font-size: 1.2em;
+      padding: 0 5px;
+      line-height: 1;
+  }
+  .removeFriendButton:hover {
+       color: #a0202d;
+   }
+   .removeFriendButton:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    .friendsSection {
+      margin-top: 2rem;
+      padding: 1rem;
+      
+  }
+  
+  .friendsSection h2 {
+      margin-bottom: 1rem;
+  }
+  
+  .friendList {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      margin-bottom: 1rem; /* Отступ перед кнопкой "Найти друзей" */
+  }
+  
+  .friendItem {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #eee;
+  }
+  
+  .friendItem:last-child {
+      border-bottom: none;
+  }
+  
+  .friendLink {
+      color: var(--primary-color); /* Используйте ваш цвет ссылок */
+      text-decoration: none;
+      font-weight: 500;
+  }
+  
+  .friendLink:hover {
+      text-decoration: underline;
+  }
+  
+  .friendError {
+      color: #888;
+      font-style: italic;
+  }
+  
+  .removeFriendButton {
+      background: none;
+      border: none;
+      color: #ff4d4f; /* Красный цвет для удаления */
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 0.2rem 0.5rem;
+  }
+  
+  .removeFriendButton:hover {
+      color: #cf1322; 
+  }
+  
+  .noFriendsMessage {
+      color: #555;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+  }
+  
+ 
+  .friendsSection .button {
+     
+      padding: 0.6rem 1.2rem;
+      background-color: white;
+      color: #555;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+  }
+  
+  .friendsSection .button:hover {
+       background-color: var(--primary-hover-color);
+  }
+  .profileContainer {
+    color: #d5d5d5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.topSections {
+    display: flex;
+    gap: 2rem;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.privacySection {
+    flex: 1;
+    background-color: rgb(57, 57, 57);
+    border-radius: 12px;
+    padding: 20px;
+    min-width: 300px;
+}
+
+.friendsSection {
+    flex: 1;
+    background-color: rgb(57, 57, 57);
+    border-radius: 12px;
+    padding: 20px;
+    min-width: 300px;
+}
+
+.eventsSection {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.divider {
+    width: 100%;
+    border: 1px solid #444;
+    margin: 1rem 0;
+}
+
+
+@media (max-width: 768px) {
+    .topSections {
+        flex-direction: column;
+    }
+    
+    .privacySection,
+    .friendsSection {
+        width: 100%;
+        min-width: auto;
+    }
+    
+    .infoSection {
+        padding: 20px;
+        width: 100%;
+    }
+}
+
+
+.privacySection .button,
+.friendsSection .button {
+    margin-top: 15px;
+    width: 100%;
+    max-width: 200px;
+}
+
+
+.infoSection, .privacySection, .friendsSection {
+    margin: 0;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+.profileContainer {
+  color: #d5d5d5;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.mainRow {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.infoSection, 
+.privacySection, 
+.friendsSection {
+  flex: 1;
+  min-width: 300px;
+  max-width: 400px;
+  background-color: rgb(57, 57, 57);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 0;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.eventsRow {
+  width: 100%;
+  margin-top: 2rem;
+}
+
+
+@media (max-width: 1200px) {
+  .mainRow {
+      flex-direction: column;
+      align-items: center;
+  }
+  
+  .infoSection, 
+  .privacySection, 
+  .friendsSection {
+      width: 100%;
+      max-width: 600px;
+  }
+}
+
+@media (max-width: 768px) {
+  .infoSection, 
+  .privacySection, 
+  .friendsSection {
+      padding: 15px;
+  }
+  
+  .button {
+      width: 100%;
+      max-width: none;
+  }
+}
+/*FORMA*/
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(3px);
+}
+
+.modalContent {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  color: #333;
+}
+
+.modalInput, .modalTextarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.modalTextarea {
+  height: 100px;
+  resize: vertical;
+}
+
+.modalButtons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  justify-content: flex-end;
+}
+
+.primaryButton {
+  background-color: #2196F3;
+  color: white;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.primaryButton:hover {
+  background-color: #1976D2;
+}
+
+.secondaryButton {
+  background-color: #f5f5f5;
+  color: #666;
+  padding: 10px 25px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.secondaryButton:hover {
+  background-color: #eee;
+  border-color: #ccc;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #444;
+}
+
+/* Адаптивность */
+@media (max-width: 480px) {
+  .modalContent {
+    width: 95%;
+    padding: 1.5rem;
+  }
+  
+  .modalButtons {
+    flex-direction: column;
+  }
+  
+  .primaryButton, .secondaryButton {
+    width: 100%;
+    text-align: center;
+  }
+}
+/*PRIvat*/
+
+.privacySection {
+  background: rgb(57, 57, 57);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.privacySection h2 {
+  color: #d5d5d5;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.privacySelect {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: #f7fafc;
+  font-size: 14px;
+  color: #4a5568;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1em;
+  transition: all 0.2s ease;
+}
+
+.privacySelect:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+}
+
+.privacySelect:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.loadingMessage {
+  color: #718096;
+  font-size: 0.875rem;
+  margin-top: 8px;
+  display: inline-block;
+  padding-left: 28px;
+  position: relative;
+}
+
+.loadingMessage::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e2e8f0;
+  border-top-color: #4299e1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translateY(-50%) rotate(0deg); }
+  100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+
+.privacySection .alertReg {
+  margin-bottom: 1.5rem;
+}
+
+
+@media (max-width: 480px) {
+  .privacySection {
+      padding: 16px;
+  }
+  
+  .privacySelect {
+      padding: 10px 14px;
+      background-position: right 0.5rem center;
+  }
+}

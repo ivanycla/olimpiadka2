@@ -1,0 +1,116 @@
+.guestPageContainer {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: sans-serif;
+    background-color: #393939; /* Ваш основной темный фон */
+    color: #d5d5d5; /* Ваш светлый цвет текста */
+}
+
+/* Хедер */
+.header {
+    background-color: rgba(0, 0, 0, 0.1); /* Легкий полупрозрачный хедер на темном фоне */
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between; /* Кнопка справа */
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Тень для темного фона */
+    border-bottom: 1px solid #555; /* Граница потемнее */
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+/* Контейнер для кнопок справа */
+.authActions {
+    /* Стили не нужны, так как кнопка одна */
+}
+
+/* --- Стили из вашего примера --- */
+
+/* Кнопка Войти/Зарегистрироваться */
+.button {
+    background-color: #ffffff; /* Белый фон */
+    color: rgb(57, 57, 57); /* Темный текст */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px; /* Размер шрифта из примера */
+    transition: background-color 0.3s ease;
+    text-decoration: none; /* Для Link */
+    display: inline-block; /* Для Link */
+    text-align: center;
+}
+
+.button:hover {
+    background-color: #d5d5d5; /* Светло-серый фон при наведении */
+    color: rgb(57, 57, 57);
+}
+
+.button:active {
+    background-color: #cbc7c7; /* Еще светлее при нажатии */
+    color: rgb(57, 57, 57);
+}
+
+/* --- Конец стилей из вашего примера --- */
+
+
+/* Основной контент страницы */
+.mainContent {
+    padding: 20px 30px;
+    flex-grow: 1;
+}
+
+/* Стили для карты */
+.mapContainer {
+    margin-bottom: 40px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    border: 1px solid #555;
+    min-height: 350px;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #4a4a4a; /* Темный фон для заглушки карты */
+}
+
+/* Стили для фильтров */
+.filterList {
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #555;
+}
+
+.filterList h1 {
+    font-size: 1.8em; /* Крупнее */
+    margin-bottom: 20px;
+    color: #4A90E2; /* Синий цвет заголовка из вашего примера */
+    text-align: center; /* Выравнивание по центру, как в Login */
+}
+
+/* Стили для кнопок фильтров - предполагаем, что FilterButton использует класс .button */
+/* Если FilterButton - это <button>, то стили .button применятся */
+
+/* Статусные тексты */
+.statusText {
+    text-align: center;
+    color: #b0c4de; /* Светло-голубой из ваших стилей input */
+    padding: 30px 15px;
+    font-size: 1.1em;
+}
+
+.errorText {
+    color: #E94E77; /* Яркий розово-красный для ошибок */
+    font-weight: bold;
+    background-color: rgba(233, 78, 119, 0.1);
+    padding: 10px 15px;
+    border-radius: 4px;
+    border: 1px solid rgba(233, 78, 119, 0.3);
+}
+
+/* Стили для CardList и Card должны быть адаптированы под темную тему */
+/* Пример для CardList */
+.cardList {
+    display: grid; /* Или flex */
+    gap: 25px;
+    /* Другие стили для расположения карточек */
+}

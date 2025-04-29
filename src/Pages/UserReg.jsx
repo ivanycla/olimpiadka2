@@ -1,61 +1,73 @@
 import React, { useState } from "react";
 import styles from "../styles/UserReg.module.css";
-import { useNavigate } from "react-router-dom";
-import { registerUser } from '../api/auth';
+import { useNavigate, Link } from "react-router-dom";
+import { registerUser } from "../api/api";
+import AlertReg from "../comp/UI/AlertReg/AlertReg.jsx";
 
-const API_BASE_URL = "http://localhost:8081";
+const USER_ROUTE = '/UserPage'; // Используйте '/userpage', если изменили роут на нижний регистр
+
 const UserReg = () => {
     const [email, setEmail] = useState("");
     const [pass, setPass] = useState("");
     const [confirmPass, setConfirmPass] = useState("");
     const [error, setError] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setIsLoading(true);
-        setError("");
+        setError(""); // <-- Первичная очистка ошибки при старте отправки
+        setSuccessMessage("");
 
-        // Клиентская валидация
         if (pass !== confirmPass) {
             setError("Пароли не совпадают");
-            setIsLoading(false);
             return;
         }
 
+        if (pass.length < 6) {
+             setError("Пароль должен быть не менее 6 символов.");
+             return;
+        }
+
+        setIsLoading(true);
+
         try {
-            const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    username: email,
-                    password: pass,
-                }),
-            });
+            // Используем функцию из api.js
+            const data = await registerUser(email, pass);
+            console.log("Registration successful, received data:", data);
 
-            const data = await response.json();
+            // --- ДОБАВЛЕНО: Гарантированная очистка ошибки ПОСЛЕ успешного ответа ---
+            setError("");
+            // ------------------------------------------------------------------------
 
-            if (response.ok && response.status === 201) {
-                // Проверка наличия токенов в ответе
-                if (!data.accessToken || !data.refreshToken) {
-                    throw new Error("Отсутствуют токены в ответе сервера");
-                }
+            // --- УСПЕШНАЯ РЕГИСТРАЦИЯ И АВТО-ЛОГИН ---
+            if (data && data.accessToken && data.refreshToken && data.username) {
+                localStorage.setItem('accessToken', data.accessToken);
+                localStorage.setItem('refreshToken', data.refreshToken);
+                localStorage.setItem('username', data.username);
+                 if (data.roles && Array.isArray(data.roles)) {
+                    localStorage.setItem('roles', JSON.stringify(data.roles));
+                 }
 
-                localStorage.setItem("accessToken", data.accessToken);
-                localStorage.setItem("refreshToken", data.refreshToken);
-                localStorage.setItem("username", email);
+                // Установка сообщения об успехе (теперь ошибка точно пуста)
+                setSuccessMessage("Регистрация прошла успешно! Вы автоматически вошли в систему.");
 
-                alert("Регистрация прошла успешно! Вы автоматически вошли в систему.");
-                navigate("/UserPage");
+                // Небольшая задержка перед редиректом
+                setTimeout(() => {
+                   navigate(USER_ROUTE); // Перенаправляем на страницу пользователя
+                }, 1500);
+
             } else {
-                setError(data?.message || `Ошибка регистрации: ${response.statusText} (Статус: ${response.status})`);
+                // Если бэкенд вернул 201, но без данных для авто-логина
+                console.error("Registration response OK, but missing login data:", data);
+                setError("Регистрация прошла, но не удалось выполнить вход автоматически. Попробуйте войти вручную.");
             }
+
         } catch (err) {
-            console.error("Ошибка:", err);
-            setError(err.message || "Не удалось подключиться к серверу. Попробуйте позже.");
+            // Ошибки от api.js
+            console.error("Registration error:", err);
+            setError(err.message || "Произошла ошибка при регистрации.");
         } finally {
             setIsLoading(false);
         }
@@ -64,16 +76,24 @@ const UserReg = () => {
     return (
         <div className={styles.container}>
             <form onSubmit={handleSubmit} className={styles.form}>
-                <h2>Регистрация</h2>
-                
-                <label htmlFor="username">Введите свой Email:</label>
+                <h2>Регистрация пользователя</h2>
+
+                {/* Показ сообщений об ошибке или успехе */}
+                {/* Эта логика отображения остается прежней, но теперь 'error' будет надежно очищен */}
+                {error && <AlertReg isVisible={!!error} message={error} type="error" onClose={() => setError("")} />}
+                {successMessage && <AlertReg isVisible={!!successMessage} message={successMessage} type="success" onClose={() => setSuccessMessage("")} />}
+
+                {/* Остальные input и button без изменений */}
+                <label htmlFor="email">Email (будет вашим логином):</label>
                 <input
                     type="email"
-                    id="username"
+                    id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    placeholder="your.email@example.com"
                     autoComplete="username"
+                    disabled={isLoading || !!successMessage}
                 />
 
                 <label htmlFor="password">Пароль:</label>
@@ -85,6 +105,7 @@ const UserReg = () => {
                     onChange={(e) => setPass(e.target.value)}
                     required
                     autoComplete="new-password"
+                    disabled={isLoading || !!successMessage}
                 />
 
                 <label htmlFor="confirmPassword">Подтвердите пароль:</label>
@@ -96,13 +117,17 @@ const UserReg = () => {
                     onChange={(e) => setConfirmPass(e.target.value)}
                     required
                     autoComplete="new-password"
+                    disabled={isLoading || !!successMessage}
                 />
 
-                {error && <p className={styles.error}>{error}</p>}
-                <button type="submit" disabled={isLoading}>
+                <button type="submit" disabled={isLoading || !!successMessage}>
                     {isLoading ? "Регистрация..." : "Зарегистрироваться"}
                 </button>
             </form>
+
+            <p style={{ textAlign: 'center', marginTop: '1rem' }}>
+                Уже есть аккаунт? <Link to="/Login">Войти</Link> {/* Используйте '/login', если изменили роут */}
+            </p>
         </div>
     );
 };

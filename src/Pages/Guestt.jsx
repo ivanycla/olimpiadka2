@@ -1,94 +1,114 @@
-import React, { useState } from "react";
+// src/pages/Guestt.jsx
+import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
+import { getEvents } from "../api/api";
 import CardList from "../comp/UI/CardList/CardList.jsx";
-import Map from "../comp/UI/Map/Map.jsx";
-import './Guestt.css'
+import MapComponent from "../comp/UI/Map/Map.jsx"; // <-- ИСПРАВЛЕН ИМПОРТ
 import FilterButton from "../comp/UI/FilterButton/FilterButton.jsx";
+import styles from '../styles/Guestt.module.css';
 
 const Guestt = () => {
+    const [events, setEvents] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [filter, setFilter] = useState('all');
 
-    const [mock] = useState([
-        {
-            name: "Концерт маканчика",
-            description: `Подо мной M5, Asphalt 8...`,
-            format: "Оффлайн",
-            place: "Минск, пр. Независимости, 58",
-            coordinates: { lat: 53.902257, lng: 27.561824 },
-            duration: "Жалко что не всю жизни",
-            date: "03.05.2025",
-            info: "Подо мной M5, Asphalt 8...",
-            tags: ["offline", "macan", "music"],
-            img: "https://cdn.promodj.com/afs/4f675099712b583994da2c9fe5782c7c12%3Aresize%3A2000x2000%3Asame%3Ab3b350"
-        },
-        {
-            name: "Концерт иваназоло",
-            description: `Лаванда, меня уносит правда...`,
-            format: "Оффлайн",
-            place: "Минск, ул. Немига, 5",
-            coordinates: { lat: 53.904539, lng: 27.561523 }, 
-            duration: "Жалко что не всю жизни",
-            date: "10.05.2025",
-            info: "Лаванда, меня уносит правда",
-            tags: ["offline", "ivanzolo", "music"],
-            img: "https://uznayvse.ru/images/content/2022/3/blogger-ivan-zolo_100.jpg"
-        },
-        {
-            name: "Пиздим лазовского",
-            description: `Та просто отпизидим его`,
-            format: "Оффлайн",
-            place: "БГАС, Минск",
-            coordinates: { lat: 53.930887, lng: 27.651634 },
-            duration: "Жалко что не всю жизни",
-            date: "08.04.2025",
-            info: "заебал",
-            tags: ["offline", "fight"],
-            img: "https://sun9-73.userapi.com/impf/mk2xRlNqECIqmVBF9q1xbxY0a6xS5ArgBq5DtA/MxTv32K_9sg.jpg?size=1818x606&quality=95&crop=0,191,1500,500&sign=74cfa2b24e8d68f431fafc9f34b1144c&type=cover_group"
+    // --- Загрузка Мероприятий ---
+    const fetchEvents = useCallback(async () => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            console.log("API: Вызов getEvents (Guestt.jsx)");
+            const eventsPage = await getEvents({ page: 0, size: 100 }); // Загружаем больше событий для карты
+            console.log("Ответ getEvents:", eventsPage);
+            setEvents(eventsPage?.content || []);
+        } catch (err) {
+            console.error("Ошибка при загрузке мероприятий для гостя:", err);
+            setError(err.message || "Не удалось загрузить мероприятия.");
+        } finally {
+            setIsLoading(false);
         }
-    ]);
-    const [isLog,setIslog]=useState(false);
-  
-    const [filter, setFilter] = useState('all')
-    function handleFilter(e, type){
-        setFilter(type)
-        e.target.className = 'active'
+    }, []);
+
+    useEffect(() => {
+        fetchEvents();
+    }, [fetchEvents]);
+
+    // --- Обработчик Фильтра ---
+    function handleFilter(type) {
+        setFilter(type);
     }
 
-    const mapMarkers = mock.map(event => ({
-        lat: event.coordinates.lat,
-        lng: event.coordinates.lng,
-        title: event.name,
-        info: event.info
-    }));
+    // --- Подготовка данных для карты ---
+    const mapMarkers = events
+        .filter(event => event?.location && typeof event.location.latitude === 'number' && typeof event.location.longitude === 'number')
+        .map((event, index) => ({
+            id: event.id || `guest-event-${index}`, // Уникальный ID
+            lat: event.location.latitude,
+            lng: event.location.longitude,
+            title: event.title || 'Без названия', // Название для подсказки/заголовка
+            // Информация для балуна
+            info: `${event.location.address || event.location.city || ''}\nНачало: ${event.startTime ? new Date(event.startTime).toLocaleString('ru-RU') : 'не указано'}`
+        }));
+     console.log("Подготовленные маркеры для карты (Guestt):", mapMarkers);
 
+    // --- Отображение ---
     return (
-        <div className="guest-page">
-            <header style={{ padding: "20px", display: "flex", justifyContent: "space-between" }}>
-                <Link to="/login" style={{ textDecoration: "none", color: "#007bff" }}>
-                    Войти
-                </Link>
-                
+        <div className={styles.guestPageContainer}>
+            <header className={styles.header}>
+                 <div></div> {/* Пустой div для выравнивания */}
+                <div className={styles.authActions}>
+                    <Link to="/login" className={styles.button}>
+                        Войти / Зарегистрироваться
+                    </Link>
+                </div>
             </header>
-            
-            <div style={{ padding: "20px" }}>
+
+            <div className={styles.mainContent}>
                 {/* Карта */}
-                <div style={{ marginBottom: "40px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}>
-                    <Map markers={mapMarkers} />
+                <div className={styles.mapContainer}>
+                     {/* Показываем карту, если нет глобальной ошибки загрузки событий */}
+                     {!error ? (
+                         <MapComponent markers={mapMarkers} />
+                     ) : (
+                         <p className={`${styles.statusText} ${styles.errorText}`}>Не удалось загрузить карту: {error}</p>
+                     )}
                 </div>
 
-                <div style={{ marginTop: "30px", padding: "20px", background: "#f8f9fa" }}>
-                    <FilterButton onClick={() => {setFilter('all')}} isActive={filter === 'all'}>Все</FilterButton>
-                    <FilterButton onClick={() => {setFilter('offline')}} isActive={filter === 'offline'}>Оффлайн</FilterButton>
-                    <FilterButton onClick={() => {setFilter('online')}} isActive={filter === 'online'}>Онлайн</FilterButton>
-                    <FilterButton onClick={() => {setFilter('music')}} isActive={filter === 'music'}>Музыка</FilterButton>
-                </div>
+                {/* Статус загрузки списка событий */}
+                {isLoading && <p className={styles.statusText}>Загрузка мероприятий...</p>}
+                {/* Ошибка загрузки списка событий */}
+                {error && !isLoading && <p className={`${styles.statusText} ${styles.errorText}`}>Ошибка загрузки мероприятий: {error}</p>}
 
-                <CardList 
-                events={mock}
-                isLog={isLog}
-                filter={filter}
-                 />
-                
-                
+                {/* Контент под картой (фильтры и список) */}
+                {!isLoading && !error && (
+                    <>
+                        <div className={styles.filterList}>
+                            <h1>Мероприятия</h1>
+                            <FilterButton onClick={() => handleFilter('all')} isActive={filter === 'all'}>Все</FilterButton>
+                            <FilterButton onClick={() => handleFilter('offline')} isActive={filter === 'offline'}>Оффлайн</FilterButton>
+                            <FilterButton onClick={() => handleFilter('online')} isActive={filter === 'online'}>Онлайн</FilterButton>
+                            {/* Добавьте другие кнопки фильтров, если нужно */}
+                        </div>
+
+                        {events.length > 0 ? (
+                            <CardList
+                                events={events}
+                                isLog={false} // Гость не авторизован
+                                isOrganizerView={false}
+                                filter={filter}
+                                // Передаем пустые Set, так как гость не может участвовать/добавлять в избранное
+                                participatingEventIds={new Set()}
+                                favoriteEventIds={new Set()}
+                                // Передаем пустые обработчики или null
+                                onParticipateToggle={() => {}}
+                                onFavoriteToggle={() => {}}
+                            />
+                        ) : (
+                             <p className={styles.statusText}>Опубликованных мероприятий пока нет.</p>
+                        )}
+                    </>
+                )}
             </div>
         </div>
     );

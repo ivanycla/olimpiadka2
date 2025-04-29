@@ -1,0 +1,50 @@
+/* CreateEvent.module.css */
+
+/* --- Контейнер всей страницы --- */
+.createEventContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Не центрируем по вертикали, чтобы форма была ближе к верху */
+    /* justify-content: center; */
+    padding: 40px 20px; /* Отступы сверху/снизу и по бокам */
+    min-height: 100vh; /* Минимальная высота */
+    background-color: #1a1a1a; /* Тот же темный фон, что и на других страницах */
+    box-sizing: border-box;
+  }
+  
+  /* --- Заголовок (если он будет в CreateEvent.jsx) --- */
+  /* .createEventContainer h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #ffffff;
+  } */
+  
+  /* --- Стили для AlertReg --- */
+  /* Позиционирование алерта над формой */
+  .createEventContainer > :global(.alert-reg-container) { /* Пример селектора */
+    width: 100%;
+    max-width: 500px; /* Ширина как у формы */
+    margin-bottom: 1.5rem;
+    box-sizing: border-box;
+  }
+  
+  
+  /* --- Контейнер для формы (чтобы ограничить ширину самой формы) --- */
+  /* Используем стили из OrgForm.module.css для самой формы, */
+  /* этот контейнер нужен только если сама форма не имеет max-width */
+  /* Если OrgForm имеет max-width, этот div можно убрать или оставить для доп. отступов */
+  .formContainer { /* Если вы оборачиваете OrgForm в div с этим классом */
+     width: 100%;
+     max-width: 500px; /* Ширина формы создания */
+     /* background-color: rgb(57, 57, 57); */ /* Фон задается в OrgForm */
+     /* padding: 2rem; */ /* Паддинг задается в OrgForm */
+     /* border-radius: 10px; */ /* Радиус задается в OrgForm */
+     /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); */ /* Тень задается в OrgForm */
+  }
+  
+  /* --- Дополнительные стили, если нужны --- */
+  /* Например, если нужно добавить отступы вокруг формы */
+  .createEventContainer .formContainer { /* Уточняем селектор */
+    margin-top: 1rem; /* Добавим отступ сверху */
+  }

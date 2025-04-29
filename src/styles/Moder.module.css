@@ -1,0 +1,220 @@
+/* Moder.module.css - Обновленная версия */
+
+/* --- Основной контейнер страницы --- */
+.moderContainer {
+  background-color: #1a1a1a;
+  color: #e0e0e0;
+  min-height: 100vh;
+  padding: 20px; /* Уменьшил верхний/нижний отступ */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Центрируем контентные блоки */
+}
+
+/* --- Заголовок + Кнопка Профиля --- */
+.header {
+  width: 100%;
+  max-width: 1000px; /* Ширина под контент */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 0 10px; /* Небольшие отступы по бокам */
+  box-sizing: border-box;
+}
+
+.header h1 {
+  margin: 0; /* Убираем стандартные отступы h1 */
+  color: #ffffff;
+  font-size: 1.8rem; /* Размер как у заголовков форм */
+}
+
+.profileButton {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 1rem;
+  flex-shrink: 0; /* Не сжиматься */
+}
+
+.profileButton:hover {
+  background-color: #0056b3;
+}
+
+/* --- Секции (для организаций и для событий) --- */
+.section {
+  width: 100%;
+  max-width: 1000px; /* Ширина контентной области */
+  margin-bottom: 2.5rem; /* Отступ между секциями */
+}
+
+.section h2 {
+  color: #e0e0e0;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #444; /* Линия под заголовком секции */
+  text-align: center;
+}
+
+/* --- Контейнер для карточек внутри секции --- */
+.content {
+  width: 100%;
+  /* Убираем фон и тень отсюда, они будут у карточек */
+  /* background-color: #2a2a2a; */
+  /* padding: 25px; */
+  /* border-radius: 8px; */
+  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); */
+}
+
+/* Стили для сообщений */
+.loadingText, .noOrgsText, .noEventsText {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #b0b0b0;
+  padding: 30px 20px;
+  background-color: #2a2a2a; /* Фон для сообщений */
+  border-radius: 8px;
+}
+
+/* --- Стили для карточек организаций --- */
+.orgCardsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Отступ между карточками организаций */
+}
+
+.orgCard {
+  background-color: #333;
+  padding: 15px 20px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  display: flex;
+  flex-direction: column; /* Элементы внутри карточки друг под другом */
+  gap: 10px;
+}
+
+.orgInfo {
+  /* flex-grow: 1; */ /* Не нужно, т.к. карточка column */
+  /* margin-right: 10px; */
+}
+
+.orgInfo strong {
+  color: #ffffff;
+  font-size: 1.1em;
+}
+
+.orgInfo span {
+  color: #aaa;
+  font-size: 0.9em;
+  display: block;
+  margin-top: 3px;
+}
+
+/* Контейнер для кнопок */
+.cardActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-start; /* Кнопки слева */
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #444;
+}
+
+/* --- Стили для карточек событий (используем CardList или свой контейнер) --- */
+.eventCardsContainer {
+  display: grid; /* Отображаем события сеткой */
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* Адаптивная сетка */
+  gap: 20px;
+}
+
+/* Обертка для Event Card + Кнопки Модерации */
+.eventModerationItem {
+    background-color: #333; /* Фон для всей ячейки модерации */
+    border-radius: 12px; /* Скругление как у карточки */
+    border: 1px solid #444;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Чтобы скругление работало */
+}
+
+/* Стилизация карточки внутри модерации (если нужны отличия от Card.module.css) */
+/* Можно использовать :global для доступа к стилям Card */
+.eventModerationItem > :global(.card) {
+    margin: 0; /* Убираем внешние отступы у карты */
+    border: none; /* Убираем свою рамку */
+    box-shadow: none; /* Убираем свою тень */
+    border-radius: 0; /* Убираем свое скругление (будет от обертки) */
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+/* Позиционирование кнопок модерации под карточкой события */
+.eventModerationItem .cardActions {
+    padding: 15px;
+    border-top: 1px solid #444;
+    margin-top: 0; /* Убираем отступ, т.к. есть padding */
+    background-color: #3a3a3a; /* Чуть другой фон для кнопок */
+    border-bottom-left-radius: 12px; /* Скругляем нижние углы */
+    border-bottom-right-radius: 12px;
+}
+
+/* --- Общие Стили Кнопок Действий --- */
+.actionButton {
+  padding: 8px 15px;
+  border-radius: 4px;
+  border: 1px solid #555;
+  background-color: #444;
+  color: #e0e0e0;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.actionButton:hover:not(:disabled) {
+  background-color: #555;
+  border-color: #777;
+}
+
+.actionButton:disabled {
+  background-color: #555;
+  color: #888;
+  cursor: not-allowed;
+  border-color: #666;
+  opacity: 0.7;
+}
+
+/* --- Кнопка "Одобрить" --- */
+.approveButton {
+  border-color: #28a745;
+  color: #28a745;
+}
+.approveButton:hover:not(:disabled) {
+  background-color: #28a745;
+  color: white;
+}
+
+/* --- Кнопка "Отклонить" --- */
+.rejectButton {
+  border-color: #dc3545;
+  color: #dc3545;
+}
+.rejectButton:hover:not(:disabled) {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* --- Стили для AlertReg внутри карточек --- */
+.orgCard > :global(.alert-reg-container),
+.eventModerationItem > :global(.alert-reg-container) { /* Добавили селектор для событий */
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  box-sizing: border-box;
+  /* flex-basis: 100%; */ /* Убрано, чтобы не ломать flex в orgCard */
+}

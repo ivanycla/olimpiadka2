@@ -1,0 +1,149 @@
+/* src/comp/UI/InviteFriendModal/InviteFriendModal.module.css */
+
+/* Стили для полупрозрачного фона */
+.inviteModal {
+    position: fixed;
+    inset: 0; /* Аналог top: 0; left: 0; right: 0; bottom: 0; */
+    background-color: rgba(0, 0, 0, 0.65); /* Немного темнее фон */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050; /* Убедитесь, что выше других элементов */
+    padding: 20px;
+    box-sizing: border-box;
+    font-family: sans-serif; /* Используем стандартный шрифт */
+}
+
+/* Стили для самого модального окна */
+.modalContent {
+    background-color: #ffffff; /* Белый фон */
+    padding: 25px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Немного больше тень */
+    max-width: 500px;
+    width: 95%; /* Немного шире на маленьких экранах */
+    max-height: 80vh; /* Ограничение высоты */
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Кнопка закрытия (крестик) */
+.closeButton {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 2rem; /* Крупнее крестик */
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    transition: color 0.2s ease;
+}
+.closeButton:hover {
+    color: #555; /* Темнее при наведении */
+}
+
+/* Заголовок модального окна */
+.modalContent h2 {
+    margin-top: 0;
+    margin-bottom: 25px; /* Больше отступ снизу */
+    text-align: center;
+    font-size: 1.4em; /* Немного крупнее */
+    color: #333;
+    font-weight: 600;
+    border-bottom: 1px solid #eee; /* Разделитель */
+    padding-bottom: 15px;
+    word-break: break-word;
+}
+
+/* Сообщения об ошибках или загрузке */
+.error,
+.loadingMessage,
+.noFriendsMessage {
+    text-align: center;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+.error {
+    color: #a94442; /* Темно-красный */
+    background-color: #f2dede;
+    border: 1px solid #ebccd1;
+}
+.loadingMessage {
+     color: #666;
+ }
+.noFriendsMessage {
+     color: #888;
+ }
+
+/* Контейнер для списка друзей */
+.friendList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto; /* Скролл, если список длинный */
+    flex-grow: 1;
+    border-top: 1px solid #eee;
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+/* Элемент списка друга */
+.friendItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 5px; /* Больше вертикальный отступ */
+    border-bottom: 1px solid #f0f0f0;
+}
+.friendItem:last-child {
+    border-bottom: none;
+}
+
+/* Имя друга */
+.friendName {
+    color: #444;
+    font-weight: 500;
+}
+
+/* Контейнер для кнопки и статуса */
+.inviteAction {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 130px; /* Чтобы кнопка не прыгала по ширине */
+    justify-content: flex-end;
+}
+
+/* Кнопка "Пригласить"/"Зарегистрировать" */
+.inviteButton {
+    padding: 6px 12px; /* Чуть крупнее */
+    font-size: 0.9em;
+    background-color: #007bff; /* Синий */
+    color: white;
+    border: none;
+    border-radius: 4px; /* Скругление как у основных кнопок */
+    cursor: pointer;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+.inviteButton:hover:not(:disabled) {
+    background-color: #0056b3; /* Темно-синий */
+}
+.inviteButton:disabled {
+    background-color: #ccc; /* Серый для неактивных */
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Сообщение об ошибке рядом с кнопкой */
+.inviteError {
+    color: #dc3545; /* Красный цвет ошибки */
+    font-size: 0.8em;
+    max-width: 150px; /* Ограничение ширины, если сообщение длинное */
+    text-align: right;
+}
