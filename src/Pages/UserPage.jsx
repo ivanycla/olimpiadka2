@@ -1,5 +1,5 @@
 // src/pages/UserPage.jsx
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback ,useMemo} from "react";
 import { useNavigate } from "react-router-dom";
 import {
     getEvents, getMyParticipatingEvents, getMyFavoriteEvents,
@@ -22,7 +22,7 @@ const UserPage = () => {
     const [filter, setFilter] = useState('all'); // Текущий фильтр
     const [actionError, setActionError] = useState(null); // Ошибка действий (участие/избранное)
     const [statusesLoading, setStatusesLoading] = useState(true); // Отдельный лоадер для статусов
-
+    const [tags,setTags]=useState([]);
     // --- Функции Загрузки Данных ---
     // Загрузка статусов участия и избранного ТЕКУЩЕГО пользователя
     const fetchUserEventStatuses = useCallback(async (showLoading = true) => {
@@ -96,6 +96,24 @@ const UserPage = () => {
             return false;
         }
     }, [fetchUserEventStatuses]);
+    
+    const filteredEvents = useMemo(() => {
+        if (!allEvents.length) return [];
+        
+        return allEvents.filter(event => {
+            const matchesFormat = 
+                filter === 'all' ||
+                (filter === 'offline' && event.format === 'OFFLINE') ||
+                (filter === 'online' && event.format === 'ONLINE');
+            
+            const matchesTag = 
+                filter === 'all' || 
+                event.tags?.some(tag => tag.name === filter);
+            
+            return matchesFormat || matchesTag;
+        });
+    }, [allEvents, filter]);
+
 
     const handleFavoriteToggle = useCallback(async (eventId, currentStatus) => {
         const apiCall = currentStatus ? removeEventFromFavorites : addEventToFavorites;
@@ -121,15 +139,28 @@ const UserPage = () => {
     const mapMarkers = allEvents // Используем allEvents
         .filter(event => event?.location && typeof event.location.latitude === 'number' && typeof event.location.longitude === 'number')
         .map((event, index) => ({
-            id: event.id || `userpage-event-${index}`, // Уникальный ID
+            id: event.id || `userpage-event-${index}`,
             lat: event.location.latitude,
             lng: event.location.longitude,
-            title: event.title || 'Без названия', // Название для подсказки/заголовка
-            // Информация для балуна
-            info: `${event.location.address || event.location.city || ''}\nНачало: ${event.startTime ? new Date(event.startTime).toLocaleString('ru-RU') : 'не указано'}`
+            title: event.title || 'Без названия',
+            info: { // Объект вместо строки
+                address: `${event.location.address || event.location.city || ''}`,
+                date: event.startTime 
+                    ? new Date(event.startTime).toLocaleString('ru-RU') 
+                    : 'не указано'
+            },
+            description: event.description,
+            format: event.format,
+            duration: event.durationMinutes,
+            endTime: event.endTime,
+            mediaContentUrl: event.mediaContentUrl,
+            organizerUsername: event.organizerUsername
         }));
     console.log("Подготовленные маркеры для карты (UserPage):", mapMarkers);
-
+    useEffect(() => {
+        const newTags = allEvents.flatMap(event => event.tags);
+        setTags(newTags);
+    }, [allEvents]);
     // --- Отображение ---
     return (
         <div className={styles.userPageContainer}>
@@ -164,12 +195,20 @@ const UserPage = () => {
                             <FilterButton onClick={() => handleFilterClick('all')} isActive={filter === 'all'}>Все</FilterButton>
                             <FilterButton onClick={() => handleFilterClick('offline')} isActive={filter === 'offline'}>Оффлайн</FilterButton>
                             <FilterButton onClick={() => handleFilterClick('online')} isActive={filter === 'online'}>Онлайн</FilterButton>
-                             {/* Добавьте остальные фильтры по тегам, если они нужны */}
+                            {tags.map((tag) => (
+                            <FilterButton 
+                            key={tag.name} 
+                            onClick={() => handleFilterClick(tag.name)} 
+                            isActive={filter === tag.name}
+                            >
+                            {tag.name}
+                            </FilterButton>
+                            ))}
                         </div>
 
                         {allEvents.length > 0 ? (
                             <CardList
-                                events={allEvents} // Передаем все события
+                            events={filteredEvents}// Передаем все события
                                 isLog={true}      // Пользователь авторизован
                                 filter={filter}     // Передаем фильтр
                                 isOrganizerView={false} // Обычный вид карточки

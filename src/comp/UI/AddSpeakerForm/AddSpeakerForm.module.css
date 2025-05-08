@@ -1,0 +1,106 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .modalContent {
+    position: relative;
+    background: #222; /* Сделал фон темным */
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    color: #fff; /* Сделал текст белым */
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 1rem;
+    color: #fff; /* Сделал цвет текста белым */
+  }
+  
+  .input {
+    padding: 0.7rem;
+    border: 1px solid #666;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+    background: #333; /* Сделал фон инпута темным */
+    color: #fff; /* Сделал текст в инпуте белым */
+  }
+  
+  .input:focus {
+    outline: none;
+    border-color: #888;
+    box-shadow: 0 0 0 2px rgba(200, 200, 200, 0.2);
+  }
+  
+  .fileInput {
+    padding: 0.5rem;
+    border: 1px solid #666;
+    border-radius: 4px;
+    background: #333; /* Темный фон */
+    color: #fff; /* Белый текст */
+  }
+  
+  .button {
+    background: #444; /* Сделал кнопку темной */
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    align-self: flex-end;
+  }
+  
+  .button:hover {
+    background: #555;
+  }
+  
+  .button:active {
+    transform: scale(0.98);
+    background: #333;
+  }
+  
+  .previewImage {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-top: 1rem;
+    border: 1px solid #666;
+    background: #222;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  

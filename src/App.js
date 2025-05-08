@@ -14,6 +14,7 @@ import ModaraitedProfile from './Pages/ModaraitedProfile';
 import CreateEvent from './Pages/CreateEvent';
 import ViewUserProfile from './Pages/ViewUserProfile';
 import FindUsersPage from './Pages/FindUserPage';
+
 // Добавьте импорт для страницы 404, если она есть
 // import NotFoundPage from './Pages/NotFoundPage';
 
@@ -23,6 +24,7 @@ function App() {
       {/* BrowserRouter должен быть один */}
       {/* basename="/olimpiada" означает, что все пути будут относительно /olimpiada */}
       {/* т.е. /login будет доступен по адресу http://yourdomain.com/olimpiada/login */}
+      
       <BrowserRouter basename="/olimpiada">
 
         {/* Используйте ОДИН компонент Routes */}
@@ -60,6 +62,7 @@ function App() {
         </Routes>
 
       </BrowserRouter>
+      
     </div>
   );
 }

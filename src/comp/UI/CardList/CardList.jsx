@@ -1,21 +1,20 @@
 // src/comp/UI/CardList/CardList.jsx
 import React from 'react';
-import Card from '../Card/Card'; // Путь к Card
-import styles from './CardList.module.css'; // Стили для списка
+import Card from '../Card/Card';
+import styles from './CardList.module.css';
 
 const CardList = ({
     events,
     isLog,
     isOrganizerView,
-    // Принимаем новые пропсы от Profile
     participatingEventIds,
     favoriteEventIds,
     onParticipateToggle,
     onFavoriteToggle
 }) => {
-
+    // Добавляем проверку на пустой массив
     if (!events || events.length === 0) {
-        return <p className={styles.noEvents}>Список мероприятий пуст.</p>; // Или другое сообщение
+        return <p className={styles.noEvents}>Мероприятия не найдены.</p>;
     }
 
     return (
@@ -26,10 +25,8 @@ const CardList = ({
                     event={event}
                     isLog={isLog}
                     isOrganizerView={isOrganizerView}
-                    // Передаем статусы, определенные из Set ID
                     initialIsParticipating={participatingEventIds?.has(event.id)}
                     initialIsFavorite={favoriteEventIds?.has(event.id)}
-                    // Передаем колбэки дальше
                     onParticipateToggle={onParticipateToggle}
                     onFavoriteToggle={onFavoriteToggle}
                 />

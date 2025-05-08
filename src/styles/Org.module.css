@@ -1,0 +1,43 @@
+
+ /* Хедер */
+.header {
+  background-color: rgba(0, 0, 0, 0.1); /* Легкий полупрозрачный хедер на темном фоне */
+  padding: 15px 30px;
+  display: flex;
+  justify-content: flex-end; /* Кнопка справа */
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Тень для темного фона */
+  border-bottom: 1px solid #555; /* Граница потемнее */
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Контейнер для кнопок справа */
+
+
+/* --- Стили из вашего примера --- */
+
+/* Кнопка Войти/Зарегистрироваться */
+.button {
+  background-color: #ffffff; /* Белый фон */
+  color: rgb(57, 57, 57); /* Темный текст */
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px; /* Размер шрифта из примера */
+  transition: background-color 0.3s ease;
+  text-decoration: none; /* Для Link */
+  display: inline-block; /* Для Link */
+  text-align: center;
+}
+  button:hover{
+    background-color: #d5d5d5;
+    color: rgb(57, 57, 57);
+  }
+  
+  button:active {
+    background-color: #cbc7c7;
+    color: rgb(57, 57, 57);
+  } 

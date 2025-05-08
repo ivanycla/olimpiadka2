@@ -1,26 +1,26 @@
-// src/comp/UI/Card/Card.jsx
 import React, { useState, useEffect } from 'react';
 import styles from './Card.module.css';
-// Импорты API больше не нужны здесь
+import AddSpeakerForm from '../AddSpeakerForm/AddSpeakerForm';
+import ViewSpeaker from '../ViewSpeaker/ViewSpeaker';
+import Share from '../Share/Share';
 
 const Card = ({
     event,
-    isLog, // Залогинен ли текущий пользователь
-    isOrganizerView = false, // Отображается ли на странице организатора/модератора
-    // Функции обратного вызова для действий (передаются из Profile.jsx)
-    onParticipateToggle = async () => false, // Функция для Участвовать/Отменить
-    onFavoriteToggle = async () => false,   // Функция для Избранное/Убрать
-    // Начальные состояния кнопок (передаются из Profile.jsx)
+    isLog,
+    isOrganizerView = false,
+    onParticipateToggle = async () => false,
+    onFavoriteToggle = async () => false,
     initialIsParticipating = false,
     initialIsFavorite = false,
  }) => {
-
     const [isFavorite, setIsFavorite] = useState(initialIsFavorite);
     const [isParticipating, setIsParticipating] = useState(initialIsParticipating);
     const [actionError, setActionError] = useState(null);
-    const [actionLoading, setActionLoading] = useState(null); // 'participate' или 'favorite'
+    const [actionLoading, setActionLoading] = useState(null);
+    const [speaker, setSpeaker] = useState([]);
+    const [speakerFlag, setSpeakerFlag] = useState(false);
+    const [selectedSpeaker, setSelectedSpeaker] = useState(null);
 
-    // Пересчитываем состояние кнопок, если изменились initial props (например, после перезагрузки в Profile)
     useEffect(() => {
         setIsParticipating(initialIsParticipating);
     }, [initialIsParticipating]);
@@ -29,63 +29,47 @@ const Card = ({
         setIsFavorite(initialIsFavorite);
     }, [initialIsFavorite]);
 
-    // Показываем кнопки только для залогиненного пользователя не на странице организатора
     const showActionButtons = isLog && !isOrganizerView;
 
-    // --- ОБРАБОТЧИКИ, ВЫЗЫВАЮЩИЕ ПРОПСЫ ---
     const handleParticipateClick = async () => {
-        console.log("!!! УЧАСТВОВАТЬ КЛИКНУТО !!! Event ID:", event?.id); // <--- ДОБАВИТЬ
-        if (!event?.id || actionLoading) {
-             console.log("Участие: действие прервано (нет ID или загрузка)"); // <--- ДОБАВИТЬ
-             return;
-        }
+        if (!event?.id || actionLoading) return;
         setActionLoading('participate');
         setActionError(null);
-        console.log("Участие: Вызов onParticipateToggle..."); // <--- ДОБАВИТЬ
         const success = await onParticipateToggle(event.id, isParticipating);
-         console.log("Участие: onParticipateToggle вернул:", success); // <--- ДОБАВИТЬ
-        if (!success) {
-             setActionError("Ошибка изменения статуса участия");
-        }
+        if (!success) setActionError("Ошибка изменения статуса участия");
         setActionLoading(null);
     };
 
     const handleFavoriteClick = async () => {
-         console.log("!!! ИЗБРАННОЕ КЛИКНУТО !!! Event ID:", event?.id); // <--- ДОБАВИТЬ
-         if (!event?.id || actionLoading) {
-              console.log("Избранное: действие прервано (нет ID или загрузка)"); // <--- ДОБАВИТЬ
-              return;
-         }
-         setActionLoading('favorite');
-         setActionError(null);
-         console.log("Избранное: Вызов onFavoriteToggle..."); // <--- ДОБАВИТЬ
-         const success = await onFavoriteToggle(event.id, isFavorite);
-          console.log("Избранное: onFavoriteToggle вернул:", success); // <--- ДОБАВИТЬ
-         if (!success) {
-             setActionError("Ошибка изменения статуса избранного");
-         }
-         setActionLoading(null);
-     };
+        if (!event?.id || actionLoading) return;
+        setActionLoading('favorite');
+        setActionError(null);
+        const success = await onFavoriteToggle(event.id, isFavorite);
+        if (!success) setActionError("Ошибка изменения статуса избранного");
+        setActionLoading(null);
+    };
 
-    // --- Функции Форматирования ---
     const formatDate = (dateString) => {
         if (!dateString) return '?';
         try { return new Date(dateString).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' }); }
         catch (e) { return 'Неверная дата'; }
     };
+
     const formatTime = (dateString) => {
         if (!dateString) return '?';
         try { return new Date(dateString).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }); }
         catch (e) { return '?'; }
     };
+
     const formatDuration = (minutes) => {
         if (minutes == null || isNaN(minutes) || minutes <= 0) return null;
         const hours = Math.floor(minutes / 60);
         const mins = minutes % 60;
-        let result = '';
-        if (hours > 0) result += `${hours} ч `;
-        if (mins > 0) result += `${mins} мин`;
-        return result.trim();
+        return `${hours > 0 ? `${hours} ч ` : ''}${mins > 0 ? `${mins} мин` : ''}`.trim();
+    };
+
+    const AddSpeaker = (newSpeaker) => {
+        setSpeaker(prev => [...prev, newSpeaker]);
     };
 
     if (!event) return <div className={styles.card}>Ошибка: нет данных.</div>;
@@ -97,10 +81,12 @@ const Card = ({
     return (
         <div className={styles.card}>
             {event.mediaContentUrl ? (
-                 <div className={styles.imageContainer}>
-                     <img src={event.mediaContentUrl} alt={event.title || 'Медиа'} className={styles.image} />
-                 </div>
-             ): ( <div className={styles.imagePlaceholder}>Нет изображения</div> )}
+                <div className={styles.imageContainer}>
+                    <img src={event.mediaContentUrl} alt={event.title || 'Медиа'} className={styles.image} />
+                </div>
+            ) : (
+                <div className={styles.imagePlaceholder}>Нет изображения</div>
+            )}
 
             <div className={styles.content}>
                 <h3 className={styles.title}>{event.title || 'Без названия'}</h3>
@@ -115,14 +101,29 @@ const Card = ({
                     {event.resources && <p className={styles.detailItem}><strong>Ресурсы:</strong> {event.resources}</p>}
                 </div>
 
-                 {event.tags && event.tags.length > 0 && (
-                     <div className={styles.tagsContainer}>
-                         <strong>Теги:</strong>
-                         {event.tags.map((tag) => (
-                             <span key={tag.id || tag} className={styles.tag}>{tag.name || tag}</span>
-                         ))}
-                     </div>
-                 )}
+                {event.tags?.length > 0 && (
+                    <div className={styles.tagsContainer}>
+                        <strong>Теги:</strong>
+                        {event.tags.map((tag) => (
+                            <span key={tag.id || tag} className={styles.tag}>{tag.name || tag}</span>
+                        ))}
+                    </div>
+                )}
+
+                {speaker.length > 0 && (
+                    <div className={styles.tagsContainer}>
+                        <strong>Спикеры:</strong>
+                        {speaker.map((s) => (
+                            <button key={s.name} className={styles.speakerBtn} onClick={() => setSelectedSpeaker(s)}>
+                                {s.name}
+                            </button>
+                        ))}
+                    </div>
+                )}
+
+                {selectedSpeaker && (
+                    <ViewSpeaker speaker={selectedSpeaker} onClose={() => setSelectedSpeaker(null)} />
+                )}
 
                 {actionError && <p className={styles.actionError}>{actionError}</p>}
 
@@ -132,14 +133,30 @@ const Card = ({
                             {actionLoading === 'participate' ? '...' : (isParticipating ? 'Отменить участие' : 'Участвовать')}
                         </button>
                         <button onClick={handleFavoriteClick} disabled={!!actionLoading} className={`${styles.actionButton} ${isFavorite ? styles.favoriteActive : styles.favoriteInactive}`}>
-                             {actionLoading === 'favorite' ? '...' : (isFavorite ? 'В избранном' : 'В избранное')}
+                            {actionLoading === 'favorite' ? '...' : (isFavorite ? 'В избранном' : 'В избранное')}
                         </button>
                     </div>
                 )}
 
-                 {isOrganizerView && event.status && (
-                     <p className={`${styles.status} ${styles[`status${event.status}`]}`}>Статус: {event.status}</p>
-                 )}
+                {isOrganizerView && event.status && (
+                    <div>
+                        <p className={`${styles.status} ${styles[`status${event.status}`]}`}>Статус: {event.status}</p>
+                        <button onClick={() => setSpeakerFlag(!speakerFlag)} className={styles.button}>
+                            Добавить спикера
+                        </button>
+                        <Share
+                        event={event}
+                        />
+                    </div>
+                )}
+
+                {speakerFlag && (
+                    <AddSpeakerForm
+                        onClick={() => setSpeakerFlag(!speakerFlag)}
+                        eventId={event.id}
+                        AddSpeaker={AddSpeaker}
+                    />
+                )}
             </div>
         </div>
     );

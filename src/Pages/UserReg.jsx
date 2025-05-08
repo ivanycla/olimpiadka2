@@ -29,18 +29,18 @@ const UserReg = () => {
              setError("Пароль должен быть не менее 6 символов.");
              return;
         }
-
+        
         setIsLoading(true);
 
         try {
             // Используем функцию из api.js
             const data = await registerUser(email, pass);
             console.log("Registration successful, received data:", data);
-
+            
             // --- ДОБАВЛЕНО: Гарантированная очистка ошибки ПОСЛЕ успешного ответа ---
             setError("");
             // ------------------------------------------------------------------------
-
+           
             // --- УСПЕШНАЯ РЕГИСТРАЦИЯ И АВТО-ЛОГИН ---
             if (data && data.accessToken && data.refreshToken && data.username) {
                 localStorage.setItem('accessToken', data.accessToken);
@@ -72,6 +72,8 @@ const UserReg = () => {
             setIsLoading(false);
         }
     };
+    
+    
 
     return (
         <div className={styles.container}>

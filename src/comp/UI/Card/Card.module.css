@@ -15,7 +15,17 @@
   max-width: 340px; /* Максимальная ширина карточки */
   color: #d5d5d5; /* Основной цвет текста */
 }
-
+.button {
+  background: white;
+  color: #2d2d2d !important; 
+  border: 1px solid #ddd;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  margin: 0 auto; 
+}
 .card:hover {
   transform: translateY(-5px); /* Эффект приподнимания */
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3); /* Усиленная тень */
@@ -88,7 +98,19 @@
   text-overflow: ellipsis;
   min-height: calc(1.5em * 3); /* Примерная мин. высота для 3 строк */
 }
+.speakerName {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #e4d8d8;
+  text-decoration: underline;
+  cursor: pointer;
+  margin: 0.3rem 0;
+}
 
+.speakerName:hover {
+  color: #8c8383;
+}
 .details {
   display: flex;
   flex-direction: column;
@@ -134,7 +156,25 @@
     background: #007bff; /* Синий акцент при наведении */
     color: white;
 }
+.speakerBtn {
+  background: #555;
+  color: #e0e0e0;
+  padding: 3px 8px;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  margin: 2px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
 
+.speakerBtn:hover {
+  background: #007bff;
+  color: white;
+  transform: translateY(-1px);
+}
 /* --- Кнопки действий --- */
 .actions {
     display: flex;

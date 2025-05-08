@@ -1,13 +1,12 @@
 // src/pages/Org.jsx
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback ,useMemo} from "react";
 import { useNavigate, Link } from "react-router-dom"; // Добавили Link
 import CardList from "../comp/UI/CardList/CardList.jsx";
 import MapComponent from "../comp/UI/Map/Map.jsx"; // <-- ИСПРАВЛЕН ИМПОРТ
 import FilterButton from "../comp/UI/FilterButton/FilterButton.jsx";
 import { getMyEventsAsOrganizer } from "../api/api"; // Используем функцию для получения своих событий
 import AlertReg from "../comp/UI/AlertReg/AlertReg.jsx";
-import styles from "../styles/Org.css"; // Используем стили OrgPage
-
+import styles from "../styles/Org.module.css"
 const CREATE_EVENT_ROUTE = '/CreateEvent'; // Убедитесь, что роут '/CreateEvent' существует в App.js
 
 const Org = () => {
@@ -15,8 +14,9 @@ const Org = () => {
     const [myEvents, setMyEvents] = useState([]);
     const [eventsLoading, setEventsLoading] = useState(true);
     const [eventsError, setEventsError] = useState(null);
-    const [filter, setFilter] = useState('all'); // Состояние фильтра
-    // TODO: Добавить состояния для пагинации
+    const [filter, setFilter] = useState('all'); 
+    const [tags,setTags]=useState([]);
+    
 
     const navigate = useNavigate();
 
@@ -60,10 +60,41 @@ const Org = () => {
             lng: event.location.longitude,
             title: event.title || 'Без названия', // Название для подсказки/заголовка
             // Информация для балуна
-            info: `${event.location.address || event.location.city || ''}\nСтатус: ${event.status}\nНачало: ${event.startTime ? new Date(event.startTime).toLocaleString('ru-RU') : 'не указано'}`
+            info: { 
+                address: `${event.location.address || event.location.city || ''}`,
+                date: event.startTime 
+                    ? new Date(event.startTime).toLocaleString('ru-RU') 
+                    : 'не указано'
+            },
+            description: event.description,
+            format: event.format,
+            duration: event.durationMinutes,
+            endTime: event.endTime,
+            mediaContentUrl: event.mediaContentUrl,
+            organizerUsername: event.organizerUsername,
+            speaker:["иван иванов,евгавит"]// ну тут понятно что с бд принимаем
         }));
     console.log("Подготовленные маркеры для карты (Org):", mapMarkers);
-
+         useEffect(() => {
+                const newTags = myEvents.flatMap(event => event.tags);
+                setTags(newTags);
+            }, [myEvents]);
+            const filteredEvents = useMemo(() => {
+                    if (!myEvents.length) return [];
+                    
+                    return myEvents.filter(event => {
+                        const matchesFormat = 
+                            filter === 'all' ||
+                            (filter === 'offline' && event.format === 'OFFLINE') ||
+                            (filter === 'online' && event.format === 'ONLINE');
+                        
+                        const matchesTag = 
+                            filter === 'all' || 
+                            event.tags?.some(tag => tag.name === filter);
+                        
+                        return matchesFormat || matchesTag;
+                    });
+                }, [myEvents, filter]);
     return (
         <div className={styles.orgPageContainer}> {/* Используем стили OrgPage */}
             <header className={styles.header}>
@@ -94,7 +125,16 @@ const Org = () => {
                         <FilterButton onClick={() => handleFilterClick('all')} isActive={filter === 'all'}>Все</FilterButton>
                         <FilterButton onClick={() => handleFilterClick('offline')} isActive={filter === 'offline'}>Оффлайн</FilterButton>
                         <FilterButton onClick={() => handleFilterClick('online')} isActive={filter === 'online'}>Онлайн</FilterButton>
-                        {/* Добавьте другие фильтры при необходимости */}
+                        {tags.map((tag) => (
+                            <FilterButton 
+                            key={tag.name} 
+                            onClick={() => handleFilterClick(tag.name)} 
+                            isActive={filter === tag.name}
+                            >
+                            {tag.name}
+                            </FilterButton>
+                            ))}
+                       
                     </div>
                 </div>
 
@@ -106,10 +146,11 @@ const Org = () => {
                     {!eventsLoading && !eventsError && (
                         myEvents.length > 0 ? (
                             <CardList
-                                events={myEvents} // Передаем только свои события
+                                events={filteredEvents} // Передаем только свои события
                                 isLog={true} // Организатор авторизован
                                 filter={filter} // Передаем текущий фильтр
                                 isOrganizerView={true} // Включаем вид организатора (редактировать/удалить)
+                                
                                 // Не передаем статусы участия/избранного и обработчики для них
                             />
                         ) : (

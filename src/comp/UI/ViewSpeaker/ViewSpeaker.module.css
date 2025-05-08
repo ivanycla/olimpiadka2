@@ -1,0 +1,119 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .modalContent {
+    position: relative;
+    background: #3b2f2f;
+    padding: 2rem;
+    border-radius: 6px;
+    max-width: 640px;
+    width: 92%;
+    max-height: 94vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 24px rgba(206, 197, 197, 0.2);
+    border: 1px solid #e0e0e0;
+  }
+  
+  .headerContainer {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .speakerImage {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #971010;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+  }
+  
+  .speakerName {
+    font-size: 1.8rem;
+    color: #971010;
+    font-weight: 600;
+    margin: 0;
+  }
+  
+  .speakerBio {
+    color: #c61717;
+    line-height: 1.6;
+    font-size: 1rem;
+    padding-left: 1.5rem;
+    border-left: 3px solid #971010;
+    margin-top: 1.5rem;
+  }
+  
+  
+  .closeButton {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.2rem;
+    background: #f8f8f8;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #606060;
+    font-size: 1.8rem;
+    line-height: 1;
+  }
+  
+  .closeButton:hover {
+    background: #f0f0f0;
+    color: #303030;
+    transform: rotate(90deg);
+  }
+  
+  @keyframes fadeIn {
+    from { 
+      opacity: 0;
+      backdrop-filter: blur(0px);
+    }
+    to { 
+      opacity: 1;
+      backdrop-filter: blur(4px);
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .modalContent {
+      padding: 1.8rem 1.4rem;
+      width: 94%;
+    }
+    
+    .speakerName {
+      font-size: 1.5rem;
+    }
+    
+    .speakerBio {
+      font-size: 1rem;
+    }
+    
+    .closeButton {
+      top: 0.8rem;
+      right: 0.8rem;
+      width: 32px;
+      height: 32px;
+      font-size: 1.6rem;
+    }
+  }
