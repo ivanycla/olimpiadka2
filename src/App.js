@@ -14,6 +14,8 @@ import ModaraitedProfile from './Pages/ModaraitedProfile';
 import CreateEvent from './Pages/CreateEvent';
 import ViewUserProfile from './Pages/ViewUserProfile';
 import FindUsersPage from './Pages/FindUserPage';
+import SharePage from './Pages/SharePage';
+import ModerCards from './Pages/ModerCards';
 
 // Добавьте импорт для страницы 404, если она есть
 // import NotFoundPage from './Pages/NotFoundPage';
@@ -55,7 +57,10 @@ function App() {
 
           <Route path='/Profile' element={<Profile />} />
           <Route path="/users/:userId" element={<ViewUserProfile />} />
-          <Route path="/find-users" element={<FindUsersPage />} /> {/* <--- НОВЫЙ РОУТ */}
+          <Route path="/find-users" element={<FindUsersPage />} />
+          <Route path="/share/:eventId" element={<SharePage/>} />
+          <Route path="/ModerCards" element={<ModerCards/>}/>
+           {/* <--- НОВЫЙ РОУТ */}
           {/* Маршрут для ненайденных страниц (404) - хороший тон */}
           {/* <Route path="*" element={<NotFoundPage />} /> */}
 

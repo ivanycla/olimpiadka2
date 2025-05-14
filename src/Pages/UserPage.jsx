@@ -183,7 +183,9 @@ const UserPage = () => {
                 {!error && (
                      <div className={styles.mapContainer}>
                          {/* Можно добавить лоадер и сюда, если карта грузится дольше событий */}
-                         <MapComponent markers={mapMarkers} />
+                         <MapComponent markers={mapMarkers} 
+                         
+                         />
                      </div>
                  )}
 

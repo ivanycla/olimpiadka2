@@ -347,3 +347,42 @@ export const registerFriendForEvent = async (eventId, friendId) => {
     console.log(`API: Попытка зарегистрировать друга ${friendId} на событие ${eventId}`);
     return request(BASE_URL_EVENTS_API, `/${eventId}/register-friend/${friendId}`, { method: 'POST' });
 };
+/**
+ * Добавляет спикера к указанному мероприятию.
+ * @param {number} eventId ID мероприятия
+ * @param {object} speakerData Данные спикера (name, information, photoUrl, existingSpeakerId?)
+ * @returns {Promise<object>} Обновленные детали мероприятия со списком спикеров
+ */
+export const addSpeakerToEvent = async (eventId, speakerData) => {
+    console.log(`API: Добавление спикера к событию ID=${eventId}`, speakerData);
+    return request(BASE_URL_EVENTS_API, `/${eventId}/speakers`, {
+        method: 'POST',
+        body: speakerData // speakerData должно соответствовать CreateSpeakerRequestDto на бэке
+    });
+};
+
+/**
+ * Удаляет спикера с указанного мероприятия.
+ * @param {number} eventId ID мероприятия
+ * @param {number} speakerId ID спикера для удаления
+ * @returns {Promise<object>} Обновленные детали мероприятия со списком спикеров
+ */
+export const removeSpeakerFromEvent = async (eventId, speakerId) => {
+    console.log(`API: Удаление спикера ID=${speakerId} с события ID=${eventId}`);
+    return request(BASE_URL_EVENTS_API, `/${eventId}/speakers/${speakerId}`, {
+        method: 'DELETE'
+    });
+};
+
+// --- НОВАЯ ФУНКЦИЯ ДЛЯ СТАТИСТИКИ МЕРОПРИЯТИЯ (Event Service) ---
+/**
+ * Получает статистику для указанного мероприятия.
+ * @param {number} eventId ID мероприятия
+ * @returns {Promise<object>} Объект EventStatsDto (eventId, eventTitle, participantCount, favoriteCount)
+ */
+export const getEventStatistics = async (eventId) => {
+    console.log(`API: Запрос статистики для события ID=${eventId}`);
+    return request(BASE_URL_EVENTS_API, `/${eventId}/stats`, {
+        method: 'GET'
+    });
+};

@@ -1,6 +1,6 @@
 // src/pages/Moder.jsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom'; // useNavigate все еще нужен для редиректов при ошибках
+import { useNavigate } from 'react-router-dom'; 
 import {
     getPendingOrganizations, downloadOrgDocument, approveOrganization, rejectOrganization,
     getPendingEvents, approveEvent, rejectEvent
@@ -258,6 +258,9 @@ const Moder = () => {
                      {renderEventModeration()}
                  </div>
              </div>
+             <button
+             onClick={()=>navigate("/ModerCards")}
+             >Настроить приоретет</button>
         </div>
     );
 };

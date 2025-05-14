@@ -1,0 +1,56 @@
+.checkboxContainer {
+    display: flex;
+    gap: 8px;
+    padding: 10px;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.styledLabel {
+    position: relative;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+}
+
+.styledLabel input {
+    opacity: 0;
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+.customCheckbox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    color: #666;
+}
+
+.customCheckbox:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.styledLabel input:checked + .customCheckbox {
+    background: #4CAF50;
+    border-color: #4CAF50;
+    color: white;
+    animation: bounce 0.4s ease;
+}
+
+@keyframes bounce {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}

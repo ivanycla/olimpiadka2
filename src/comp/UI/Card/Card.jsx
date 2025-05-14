@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom'; // Импортируем navigate
 import styles from './Card.module.css';
 import AddSpeakerForm from '../AddSpeakerForm/AddSpeakerForm';
 import ViewSpeaker from '../ViewSpeaker/ViewSpeaker';
 import Share from '../Share/Share';
-
+import { removeSpeakerFromEvent } from '../../../api/api';
+import Mark from '../Mark/Mark';
+import Comments from '../Comments/Comments';
+import ModerCards from '../../../Pages/ModerCards';
+import Priority from '../Priority/Priority';
 const Card = ({
     event,
     isLog,
@@ -12,14 +17,22 @@ const Card = ({
     onFavoriteToggle = async () => false,
     initialIsParticipating = false,
     initialIsFavorite = false,
- }) => {
+    onEventUpdate,
+    moderView,
+    onPriorityChange,
+    priorities
+}) => {
+    const navigate = useNavigate();
+
     const [isFavorite, setIsFavorite] = useState(initialIsFavorite);
     const [isParticipating, setIsParticipating] = useState(initialIsParticipating);
     const [actionError, setActionError] = useState(null);
     const [actionLoading, setActionLoading] = useState(null);
-    const [speaker, setSpeaker] = useState([]);
-    const [speakerFlag, setSpeakerFlag] = useState(false);
+    const [showAddSpeakerForm, setShowAddSpeakerForm] = useState(false);
     const [selectedSpeaker, setSelectedSpeaker] = useState(null);
+    const [speakerActionLoading, setSpeakerActionLoading] = useState(false);
+    const [commentFlag,setCommentFlag]=useState(false);
+    const currentSpeakers = event?.speakers || [];
 
     useEffect(() => {
         setIsParticipating(initialIsParticipating);
@@ -51,16 +64,20 @@ const Card = ({
 
     const formatDate = (dateString) => {
         if (!dateString) return '?';
-        try { return new Date(dateString).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' }); }
-        catch (e) { return 'Неверная дата'; }
+        try {
+            return new Date(dateString).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        } catch {
+            return 'Неверная дата';
+        }
     };
-
     const formatTime = (dateString) => {
         if (!dateString) return '?';
-        try { return new Date(dateString).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }); }
-        catch (e) { return '?'; }
+        try {
+            return new Date(dateString).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+        } catch {
+            return '?';
+        }
     };
-
     const formatDuration = (minutes) => {
         if (minutes == null || isNaN(minutes) || minutes <= 0) return null;
         const hours = Math.floor(minutes / 60);
@@ -68,15 +85,40 @@ const Card = ({
         return `${hours > 0 ? `${hours} ч ` : ''}${mins > 0 ? `${mins} мин` : ''}`.trim();
     };
 
-    const AddSpeaker = (newSpeaker) => {
-        setSpeaker(prev => [...prev, newSpeaker]);
+    const handleSpeakerAdded = useCallback((updatedEventDataWithSpeakers) => {
+        if (onEventUpdate) {
+            onEventUpdate(updatedEventDataWithSpeakers);
+        }
+        setShowAddSpeakerForm(false);
+    }, [onEventUpdate]);
+
+    const handleRemoveSpeaker = async (speakerIdToRemove) => {
+        if (!event?.id || speakerActionLoading) return;
+        const speakerName = currentSpeakers.find(s => s.id === speakerIdToRemove)?.name || '';
+        if (!window.confirm(`Удалить спикера "${speakerName}"?`)) return;
+
+        setSpeakerActionLoading(true);
+        setActionError(null);
+        try {
+            const updatedEventData = await removeSpeakerFromEvent(event.id, speakerIdToRemove);
+            if (onEventUpdate) onEventUpdate(updatedEventData);
+            if (selectedSpeaker?.id === speakerIdToRemove) setSelectedSpeaker(null);
+        } catch (err) {
+            console.error("Ошибка при удалении спикера:", err);
+            setActionError(err.message || "Не удалось удалить спикера.");
+        } finally {
+            setSpeakerActionLoading(false);
+        }
     };
 
     if (!event) return <div className={styles.card}>Ошибка: нет данных.</div>;
 
-    const placeString = event.location ? [event.location.city, event.location.address].filter(Boolean).join(', ') || 'Не указано' : 'Не указано';
+    const placeString = event.location ? [event.location.city, event.location.address].filter(Boolean).join(', ') : 'Не указано';
     const dateTimeString = event.startTime ? `${formatDate(event.startTime)} в ${formatTime(event.startTime)}` : 'Не указано';
     const durationString = formatDuration(event.durationMinutes);
+
+    const displayParticipantCount = typeof event.participantCount === 'number' ? event.participantCount : 0;
+    const displayFavoriteCount = typeof event.favoriteCount === 'number' ? event.favoriteCount : 0;
 
     return (
         <div className={styles.card}>
@@ -99,30 +141,57 @@ const Card = ({
                     <p className={styles.detailItem}><strong>Когда:</strong> {dateTimeString}</p>
                     {durationString && <p className={styles.detailItem}><strong>Длит.:</strong> {durationString}</p>}
                     {event.resources && <p className={styles.detailItem}><strong>Ресурсы:</strong> {event.resources}</p>}
+                   
                 </div>
 
                 {event.tags?.length > 0 && (
                     <div className={styles.tagsContainer}>
                         <strong>Теги:</strong>
                         {event.tags.map((tag) => (
-                            <span key={tag.id || tag} className={styles.tag}>{tag.name || tag}</span>
+                            <span key={tag.id || tag.name} className={styles.tag}>{tag.name || tag.name}</span>
                         ))}
                     </div>
                 )}
 
-                {speaker.length > 0 && (
-                    <div className={styles.tagsContainer}>
+                {currentSpeakers.length > 0 && (
+                    <div className={styles.speakerListContainer}>
                         <strong>Спикеры:</strong>
-                        {speaker.map((s) => (
-                            <button key={s.name} className={styles.speakerBtn} onClick={() => setSelectedSpeaker(s)}>
-                                {s.name}
-                            </button>
+                        {currentSpeakers.map((s) => (
+                            <div key={s.id} className={styles.speakerItem}>
+                                <button
+                                    className={styles.speakerBtn}
+                                    onClick={() => setSelectedSpeaker(s)}
+                                >
+                                    {s.name}
+                                </button>
+                                
+                                {isOrganizerView && (
+                                    <button
+                                        onClick={() => handleRemoveSpeaker(s.id)}
+                                        className={styles.removeSpeakerBtn}
+                                        disabled={speakerActionLoading}
+                                        title="Удалить спикера"
+                                    >
+                                        ×
+                                    </button>
+                                )}
+                            </div>
                         ))}
                     </div>
                 )}
 
                 {selectedSpeaker && (
-                    <ViewSpeaker speaker={selectedSpeaker} onClose={() => setSelectedSpeaker(null)} />
+                    <ViewSpeaker
+                        speaker={selectedSpeaker}
+                        onClose={() => setSelectedSpeaker(null)}
+                    />
+                )}
+
+                {isOrganizerView && (
+                    <div className={styles.eventStatsSimple}>
+                        <span>👥 Участников: {displayParticipantCount}</span>
+                        <span>⭐️ В избранном: {displayFavoriteCount}</span>
+                    </div>
                 )}
 
                 {actionError && <p className={styles.actionError}>{actionError}</p>}
@@ -132,31 +201,67 @@ const Card = ({
                         <button onClick={handleParticipateClick} disabled={!!actionLoading} className={styles.actionButton}>
                             {actionLoading === 'participate' ? '...' : (isParticipating ? 'Отменить участие' : 'Участвовать')}
                         </button>
-                        <button onClick={handleFavoriteClick} disabled={!!actionLoading} className={`${styles.actionButton} ${isFavorite ? styles.favoriteActive : styles.favoriteInactive}`}>
+                        <button
+                            onClick={handleFavoriteClick}
+                            disabled={!!actionLoading}
+                            className={`${styles.actionButton} ${isFavorite ? styles.favoriteActive : styles.favoriteInactive}`}
+                        >
                             {actionLoading === 'favorite' ? '...' : (isFavorite ? 'В избранном' : 'В избранное')}
                         </button>
                     </div>
                 )}
 
                 {isOrganizerView && event.status && (
-                    <div>
+                    <div className={styles.organizerActions}>
                         <p className={`${styles.status} ${styles[`status${event.status}`]}`}>Статус: {event.status}</p>
-                        <button onClick={() => setSpeakerFlag(!speakerFlag)} className={styles.button}>
+                        <button onClick={() => setShowAddSpeakerForm(true)} className={styles.button}>
                             Добавить спикера
                         </button>
-                        <Share
-                        event={event}
-                        />
+                    
                     </div>
                 )}
 
-                {speakerFlag && (
+
+                {showAddSpeakerForm && (
                     <AddSpeakerForm
-                        onClick={() => setSpeakerFlag(!speakerFlag)}
+                        onClick={() => setShowAddSpeakerForm(false)}
                         eventId={event.id}
-                        AddSpeaker={AddSpeaker}
+                        onSpeakerAdded={handleSpeakerAdded}
                     />
                 )}
+
+                
+                <button
+                    className={styles.button}
+                    onClick={() => {
+                        if (!event?.id) return;
+                        navigate(`/share/${event.id}`, {
+                            state: {
+                                event: event,
+                                durationString: durationString,
+                                dateTimeString: dateTimeString,
+                                placeString: placeString,
+                                speaker: currentSpeakers
+                            }
+                        });
+                    }}
+                >
+                    Поделиться событием
+                </button>
+                <Mark
+                    cardId={event.id}
+                    />
+                    <button 
+                    onClick={()=>setCommentFlag(true)}
+                    >
+                        комментарии
+                    </button>
+                    {commentFlag && (
+                        <Comments
+                        event={event}
+                        onClose={()=>setCommentFlag(false)}
+                        />
+                    )}
             </div>
         </div>
     );

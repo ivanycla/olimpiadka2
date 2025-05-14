@@ -1,0 +1,258 @@
+
+/* Card.module.css */
+
+.card {
+    background-color: rgb(57, 57, 57); /* Темно-серый фон */
+    border-radius: 12px; /* Скругление */
+    margin: 10px; /* Добавим внешний отступ для сетки */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Чуть заметнее тень */
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    /* cursor: pointer; Уберем, если клик по всей карте не нужен */
+    overflow: hidden; /* Скрываем все, что выходит за рамки */
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Адаптивная ширина */
+    max-width: 340px; /* Максимальная ширина карточки */
+    color: #d5d5d5; /* Основной цвет текста */
+  }
+  .button {
+    background: white;
+    color: #2d2d2d !important; 
+    border: 1px solid #ddd;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    margin: 0 auto; 
+  }
+  .card:hover {
+    transform: translateY(-5px); /* Эффект приподнимания */
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3); /* Усиленная тень */
+    /* background-color: rgb(52, 52, 52); */ /* Можно не менять фон */
+  }
+  
+  .imageContainer {
+    width: 100%;
+    height: 200px; /* Немного уменьшим высоту картинки */
+    overflow: hidden;
+    position: relative;
+    /* background-color: #555; */ /* Фон для плейсхолдера, если нет картинки */
+  }
+  
+  /* Плейсхолдер, если нет изображения */
+  .imagePlaceholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #444;
+      color: #aaa;
+      font-style: italic;
+  }
+  
+  .image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Масштабирует изображение, сохраняя пропорции */
+    transition: transform 0.4s ease; /* Плавный зум */
+  }
+  
+  .card:hover .image {
+    transform: scale(1.05); /* Небольшой зум картинки при наведении на карту */
+  }
+  
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Пространство между элементами контента */
+    padding: 15px; /* Отступы внутри контентной части */
+    flex-grow: 1; /* Занимает оставшееся место в карточке */
+  }
+  
+  .title {
+    font-size: 1.3rem; /* Чуть меньше заголовок */
+    font-weight: 600;
+    color: #ffffff; /* Белый цвет */
+    margin: 0 0 5px 0; /* Отступ снизу */
+  }
+  
+  .organizer {
+      font-size: 0.85rem;
+      color: #aaa;
+      margin: -5px 0 10px 0; /* Ближе к заголовку */
+      font-style: italic;
+  }
+  
+  .description {
+    font-size: 0.9rem; /* Уменьшим текст описания */
+    line-height: 1.5;
+    color: #e0e0e0; /* Чуть светлее основного */
+    margin: 0 0 10px 0; /* Отступ снизу */
+    /* Ограничение по строкам (может не работать во всех браузерах) */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: calc(1.5em * 3); /* Примерная мин. высота для 3 строк */
+  }
+  .speakerName {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #e4d8d8;
+    text-decoration: underline;
+    cursor: pointer;
+    margin: 0.3rem 0;
+  }
+  
+  .speakerName:hover {
+    color: #8c8383;
+  }
+  .details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Меньше отступ между деталями */
+    margin-bottom: 10px;
+  }
+  
+  .detailItem {
+    font-size: 0.85rem; /* Уменьшим шрифт деталей */
+    color: #b5b5b5; /* Цвет деталей */
+    display: flex;
+    align-items: center;
+    margin: 0;
+  }
+  
+  .detailItem strong {
+      color: #d5d5d5;
+      min-width: 100px; /* Выравнивание по ширине */
+  }
+  
+  /* Убрали стандартный маркер */
+  /* .detailItem::before { ... } */
+  
+  .tagsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px; /* Отступ между тегами */
+    margin-top: 10px; /* Отступ сверху */
+    margin-bottom: 10px; /* Отступ снизу */
+  }
+  
+  .tag {
+    background: #555; /* Более нейтральный фон тегов */
+    color: #e0e0e0;
+    padding: 4px 10px; /* Уменьшим паддинг */
+    border-radius: 12px; /* Более овальные */
+    font-size: 0.75rem; /* Маленький шрифт */
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+  }
+  
+  .tag:hover {
+      background: #007bff; /* Синий акцент при наведении */
+      color: white;
+  }
+  .speakerBtn {
+    background: #555;
+    color: #e0e0e0;
+    padding: 3px 8px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    margin: 2px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-block;
+  }
+  
+  .speakerBtn:hover {
+    background: #007bff;
+    color: white;
+    transform: translateY(-1px);
+  }
+  /* --- Кнопки действий --- */
+  .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: auto; /* Прижимает кнопки к низу карточки */
+      padding-top: 15px; /* Отступ сверху от тегов/деталей */
+      border-top: 1px solid #444; /* Разделитель */
+  }
+  
+  .actionButton { /* Общий стиль для кнопок действий */
+      flex-grow: 1; /* Занимают равное место */
+      background-color: #555;
+      color: #e0e0e0;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background-color 0.3s ease, opacity 0.3s ease;
+      text-align: center;
+  }
+  
+  .actionButton:hover:not(:disabled) {
+      background-color: #666;
+      color: #ffffff;
+  }
+  
+  .actionButton:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+  }
+  
+  /* Стили для кнопки избранного */
+  .favoriteInactive {
+      /* Можно добавить иконку сердечка */
+  }
+  .favoriteActive {
+      background-color: #e74c3c; /* Пример цвета для активного избранного */
+      color: white;
+  }
+  .favoriteActive:hover:not(:disabled) {
+       background-color: #c0392b;
+  }
+  
+  /* --- Статус для организатора --- */
+  .status {
+      margin-top: 10px;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      text-align: center;
+      background-color: #666; /* Фон по умолчанию */
+      color: white;
+  }
+  
+  .statusDRAFT {
+      background-color: #ffc107; /* Желтый */
+      color: #333;
+  }
+  
+  .statusPUBLISHED {
+      background-color: #28a745; /* Зеленый */
+  }
+  
+  .statusREJECTED,
+  .statusCANCELLED {
+      background-color: #dc3545; /* Красный */
+  }
+  
+  .statusPENDING_APPROVAL {
+       background-color: #17a2b8; /* Голубой */
+   }
+  
+  /* Ошибка действия (если есть) */
+  .actionError {
+      color: #ff4d4f;
+      font-size: 0.8rem;
+      margin-top: 8px;
+      text-align: center;
+  }
