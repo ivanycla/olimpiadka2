@@ -21,14 +21,14 @@ const ModaraitedProfile = () => {
       </div>
       
       <Card
-        name="zalupa"
-        description="Хуйня"
-        format="онлайн"
-        place="хз где"
-        duration="залупа"
-        date="завтра"
-        info="я ебу"
-        tags={["хуйня", "залупа"]}
+        name="name"
+        description="description"
+        format="format"
+        place="place"
+        duration="duration"
+        date="date"
+        info="info"
+        tags={["tag1", "tag2"]}
       />
         {flagNotif && (
         <NotificationForm 

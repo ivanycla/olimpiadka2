@@ -1,6 +1,6 @@
 
  /* Хедер */
-.header {
+ .header {
   background-color: rgba(0, 0, 0, 0.1); /* Легкий полупрозрачный хедер на темном фоне */
   padding: 15px 30px;
   display: flex;
@@ -41,3 +41,74 @@
     background-color: #cbc7c7;
     color: rgb(57, 57, 57);
   } 
+  .orgActions { /* Если ты добавлял эту обертку для кнопок */
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.statsButton { /* Стиль для кнопки "Показать статистику" */
+  background-color: #007bff; /* Пример цвета, синий */
+  color: white;
+  /* ... другие стили кнопки, если нужно, скопируй из .button ... */
+  /* Например: */
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.statsButton:hover {
+  background-color: #0056b3;
+}
+
+
+/* --- Стили для Модального Окна Статистики --- */
+.modalOverlay {
+  position: fixed; /* Поверх всего */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7); /* Полупрозрачный черный фон */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050; /* Должен быть выше других элементов на странице */
+}
+
+.modalContent { /* Общие стили для любого модального контента, если нужно */
+  background-color: #fff; /* Белый фон для содержимого */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  position: relative; /* Для позиционирования дочерних элементов, например, кнопки закрытия */
+  max-height: 90vh; /* Максимальная высота, чтобы не вылезать за экран */
+  overflow-y: auto; /* Прокрутка, если контент не влезает по высоте */
+}
+
+.modalContentLarge { /* Специфичные стили для большой модалки с графиками */
+  width: 80%;         /* Ширина модального окна */
+  max-width: 1000px;   /* Максимальная ширина */
+  /* padding: 25px; уже есть в .modalContent, если используешь оба класса */
+}
+
+.closeButtonModal {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 2rem; /* Крупнее для удобства */
+  font-weight: bold;
+  line-height: 1;
+  color: #333;
+  cursor: pointer;
+  padding: 0;
+}
+
+.closeButtonModal:hover {
+  color: #000;
+}

@@ -1,27 +1,48 @@
 import React, { useState } from "react";
 import styles from './AddSpeakerForm.module.css';
 import Portal from "../Portal/Portal";
-const AddSpeakerForm = ({ onClick,eventId,AddSpeaker }) => {
+import { addSpeakerToEvent } from "../../../api/api"; // <-- ИМПОРТ API
+
+// Добавляем пропс onSpeakerAdded для обновления родителя
+const AddSpeakerForm = ({ onClick, eventId, onSpeakerAdded }) => {
     const [name, setName] = useState("");
-    const [bio, setBio] = useState("");
-    const [url, setUrl] = useState(null);
-    const [preview, setPreview] = useState(null);
+    const [information, setInformation] = useState(""); // Переименовал bio в information для соответствия DTO
+    const [photoUrl, setPhotoUrl] = useState("");    // Переименовал url в photoUrl
+    // const [preview, setPreview] = useState(null); // preview не используется, можно убрать
 
-    
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-    const handleSubmit = (e) => {
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        alert("добавь или я потом добавлю отправку ");
-        const newSpeaker = {
-            eventId:eventId,
-            url:url,
-            bio:bio,
-            name:name,
-            id:Date.now()
+        setIsLoading(true);
+        setError(null);
+
+        const speakerData = {
+            name: name,
+            information: information,
+            photoUrl: photoUrl,
+            // existingSpeakerId: null, // Если у тебя будет поиск существующих спикеров, это поле пригодится
+        };
+
+        try {
+            console.log("Отправка данных спикера:", speakerData, "для eventId:", eventId);
+            const updatedEventWithSpeakers = await addSpeakerToEvent(eventId, speakerData);
+            console.log("Спикер успешно добавлен, ответ сервера:", updatedEventWithSpeakers);
+            
+            // Вызываем колбэк для обновления списка спикеров в родительском компоненте (Card.jsx)
+            // Передаем новый список спикеров из ответа сервера
+            if (onSpeakerAdded && updatedEventWithSpeakers && updatedEventWithSpeakers.speakers) {
+                onSpeakerAdded(updatedEventWithSpeakers.speakers);
+            }
+            onClick(); // Закрываем модальное окно
+        } catch (err) {
+            console.error("Ошибка при добавлении спикера:", err);
+            setError(err.message || "Не удалось добавить спикера. Попробуйте снова.");
+        } finally {
+            setIsLoading(false);
         }
-        AddSpeaker(newSpeaker);
-        onClick();
     };
 
     return (
@@ -29,6 +50,9 @@ const AddSpeakerForm = ({ onClick,eventId,AddSpeaker }) => {
         <div className={styles.modalOverlay} onClick={onClick}>
             <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
                 <form className={styles.form} onSubmit={handleSubmit}>
+                    <h3>Добавить спикера</h3> {/* Добавим заголовок */}
+                    {error && <p className={styles.errorMessage}>{error}</p>} {/* Отображение ошибки */}
+
                     <label className={styles.label} htmlFor="name">
                         Введите имя:
                         <input
@@ -36,43 +60,45 @@ const AddSpeakerForm = ({ onClick,eventId,AddSpeaker }) => {
                             type="text"
                             id="name"
                             name="name"
-                            placeholder="Имя"
+                            placeholder="Имя Фамилия"
                             onChange={(e) => setName(e.target.value)}
                             value={name}
                             required
                         />
                     </label>
 
-                    <label className={styles.label} htmlFor="bio">
+                    <label className={styles.label} htmlFor="information"> {/* Изменено с bio на information */}
                         Введите информацию (награды, место работы и т.д.):
-                        <input
-                            className={styles.input}
-                            type="text"
-                            id="bio"
-                            name="bio"
-                            placeholder="Информация"
-                            onChange={(e) => setBio(e.target.value)}
-                            value={bio}
-                            required
+                        <textarea // Используем textarea для многострочного ввода
+                            className={styles.textarea} // Можно добавить стили для textarea
+                            id="information"
+                            name="information"
+                            placeholder="Краткая информация о спикере..."
+                            onChange={(e) => setInformation(e.target.value)}
+                            value={information}
+                            // required // Сделаем необязательным, как на бэке
                         />
                     </label>
 
-                    <label className={styles.label} htmlFor="photo">
+                    <label className={styles.label} htmlFor="photoUrl"> {/* Изменено с photo на photoUrl */}
                         Прикрепите ссылку на фотографию:
                         <input
-                            className={styles.fileInput}
+                            className={styles.input} // Можно использовать тот же стиль что и для других инпутов
                             type="url"
-                            id="photo"
-                            name="photo"
-                            onChange={(e)=>setUrl(e.target.value)}
-                            value={url}
-                            required
+                            id="photoUrl"
+                            name="photoUrl"
+                            placeholder="https://example.com/photo.jpg"
+                            onChange={(e)=>setPhotoUrl(e.target.value)}
+                            value={photoUrl}
+                            // required // Сделаем необязательным, как на бэке
                         />
                     </label>
                     
-
-                    <button type="submit" className={styles.button}>
-                        Добавить
+                    <button type="submit" className={styles.button} disabled={isLoading}>
+                        {isLoading ? "Добавление..." : "Добавить"}
+                    </button>
+                    <button type="button" className={`${styles.button} ${styles.cancelButton}`} onClick={onClick} disabled={isLoading}>
+                        Отмена
                     </button>
                 </form>
             </div>

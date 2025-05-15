@@ -1,102 +1,96 @@
-// src/pages/Org.jsx
-import React, { useState, useEffect, useCallback ,useMemo} from "react";
-import { useNavigate, Link } from "react-router-dom"; // Добавили Link
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import CardList from "../comp/UI/CardList/CardList.jsx";
-import MapComponent from "../comp/UI/Map/Map.jsx"; // <-- ИСПРАВЛЕН ИМПОРТ
+import MapComponent from "../comp/UI/Map/Map.jsx";
 import FilterButton from "../comp/UI/FilterButton/FilterButton.jsx";
-import { getMyEventsAsOrganizer } from "../api/api"; // Используем функцию для получения своих событий
+import { getMyEventsAsOrganizer } from "../api/api";
 import AlertReg from "../comp/UI/AlertReg/AlertReg.jsx";
-import styles from "../styles/Org.module.css"
-const CREATE_EVENT_ROUTE = '/CreateEvent'; // Убедитесь, что роут '/CreateEvent' существует в App.js
+import styles from "../styles/Org.module.css";
+import EventStatsCharts from "../comp/UI/EventStatsCharts/EventStatsCharts.jsx"; // <-- ИМПОРТ КОМПОНЕНТА ГРАФИКОВ
+import Portal from "../comp/UI/Portal/Portal";                 // <-- Убедись, что путь к Portal верный
+
+const CREATE_EVENT_ROUTE = '/CreateEvent';
 
 const Org = () => {
-    // Состояния
     const [myEvents, setMyEvents] = useState([]);
     const [eventsLoading, setEventsLoading] = useState(true);
     const [eventsError, setEventsError] = useState(null);
-    const [filter, setFilter] = useState('all'); 
-    const [tags,setTags]=useState([]);
-    
+    const [filter, setFilter] = useState('all');
+    const [uniqueTags, setUniqueTags] = useState([]);
+    const [showStatsModal, setShowStatsModal] = useState(false); // Состояние для модалки
 
     const navigate = useNavigate();
 
-    // --- Функция Загрузки СВОИХ Событий ---
-    const fetchMyEvents = useCallback(async (page = 0, size = 50) => { // Загружаем побольше для карты
+    const fetchMyEvents = useCallback(async (page = 0, size = 100) => { // Загружаем больше для графиков
         console.log(`API: Запрос МОИХ событий (страница ${page}, размер ${size})`);
         setEventsLoading(true);
         setEventsError(null);
         try {
-            const eventsPage = await getMyEventsAsOrganizer({ page, size }); // Используем API для организатора
-            console.log("Ответ API getMyEventsAsOrganizer:", eventsPage);
+            const eventsPage = await getMyEventsAsOrganizer({ page, size });
             const fetchedEvents = eventsPage?.content || [];
             setMyEvents(fetchedEvents);
-            // TODO: Сохранить информацию о пагинации
         } catch (err) {
             console.error("Ошибка загрузки мероприятий организатора:", err);
             setEventsError(err.message || "Не удалось загрузить ваши мероприятия.");
             setMyEvents([]);
-            if (err.status === 401 || err.status === 403) navigate('/login'); // Редирект, если не авторизован как организатор
+            if (err.status === 401 || err.status === 403) navigate('/login');
         } finally {
             setEventsLoading(false);
         }
-    }, [navigate]); // Добавили navigate в зависимости
+    }, [navigate]);
 
-    // --- Эффект для Загрузки Событий ---
     useEffect(() => {
-         if (!localStorage.getItem('accessToken')) { navigate('/login'); return; } // Проверка токена
+        if (!localStorage.getItem('accessToken')) { navigate('/login'); return; }
         fetchMyEvents();
-    }, [fetchMyEvents, navigate]); // Добавили navigate
+    }, [fetchMyEvents, navigate]);
 
-    // --- Обработчики ---
+    const handleEventUpdate = useCallback((updatedEventData) => {
+        setMyEvents(prevEvents =>
+            prevEvents.map(event =>
+                event.id === updatedEventData.id ? updatedEventData : event
+            )
+        );
+    }, []);
+
     const handleProfileClick = () => { navigate("/ProfileOrg"); };
-    const handleFilterClick = (type) => { setFilter(type); }; // Обработчик для фильтров
+    const handleFilterClick = (type) => { setFilter(type); };
 
-    // --- Подготовка данных для карты ---
-    const mapMarkers = myEvents // Используем myEvents
+    const mapMarkers = useMemo(() => myEvents
         .filter(event => event?.location && typeof event.location.latitude === 'number' && typeof event.location.longitude === 'number')
-        .map((event, index) => ({
-            id: event.id || `org-event-${index}`, // Уникальный ID
+        .map((event) => ({
+            id: event.id, 
             lat: event.location.latitude,
             lng: event.location.longitude,
-            title: event.title || 'Без названия', // Название для подсказки/заголовка
-            // Информация для балуна
-            info: { 
-                address: `${event.location.address || event.location.city || ''}`,
-                date: event.startTime 
-                    ? new Date(event.startTime).toLocaleString('ru-RU') 
-                    : 'не указано'
-            },
-            description: event.description,
-            format: event.format,
-            duration: event.durationMinutes,
-            endTime: event.endTime,
-            mediaContentUrl: event.mediaContentUrl,
-            organizerUsername: event.organizerUsername,
-            speaker:["иван иванов,евгавит"]// ну тут понятно что с бд принимаем
-        }));
-    console.log("Подготовленные маркеры для карты (Org):", mapMarkers);
-         useEffect(() => {
-                const newTags = myEvents.flatMap(event => event.tags);
-                setTags(newTags);
-            }, [myEvents]);
-            const filteredEvents = useMemo(() => {
-                    if (!myEvents.length) return [];
-                    
-                    return myEvents.filter(event => {
-                        const matchesFormat = 
-                            filter === 'all' ||
-                            (filter === 'offline' && event.format === 'OFFLINE') ||
-                            (filter === 'online' && event.format === 'ONLINE');
-                        
-                        const matchesTag = 
-                            filter === 'all' || 
-                            event.tags?.some(tag => tag.name === filter);
-                        
-                        return matchesFormat || matchesTag;
-                    });
-                }, [myEvents, filter]);
+            title: event.title || 'Без названия',
+            info: event 
+        })), [myEvents]);
+
+    useEffect(() => {
+        if (myEvents.length > 0) {
+            const allTags = myEvents.flatMap(event => event.tags || []);
+            const tagNames = allTags.map(tag => tag.name);
+            setUniqueTags([...new Set(tagNames)].map(name => ({ name })));
+        } else {
+            setUniqueTags([]);
+        }
+    }, [myEvents]);
+
+    const filteredEventsForList = useMemo(() => { // Переименовал для ясности
+        if (!myEvents.length) return [];
+        return myEvents.filter(event => {
+            const matchesFormat =
+                filter === 'all' ||
+                (filter === 'offline' && event.format === 'OFFLINE') ||
+                (filter === 'online' && event.format === 'ONLINE');
+            const matchesTag = event.tags?.some(tag => tag.name === filter);
+            if (filter === 'all') return true;
+            if (filter === 'offline' || filter === 'online') return matchesFormat;
+            return matchesTag;
+        });
+    }, [myEvents, filter]);
+
     return (
-        <div className={styles.orgPageContainer}> {/* Используем стили OrgPage */}
+        <div className={styles.orgPageContainer}>
             <header className={styles.header}>
                 <button onClick={handleProfileClick} className={styles.button}>
                     Профиль
@@ -104,28 +98,32 @@ const Org = () => {
             </header>
 
             <main className={styles.mainContent}>
-                {/* Секция Карты */}
                 <div className={styles.mapContainer}>
-                    {/* Лоадер и ошибка для карты */}
                     {eventsLoading && <p>Загрузка карты...</p>}
                     {eventsError && <AlertReg isVisible={true} message={`Ошибка загрузки карты: ${eventsError}`} type="error" />}
-                    {/* Рендерим карту, если нет ошибки */}
                     {!eventsError && <MapComponent markers={mapMarkers} />}
                 </div>
 
-                {/* Секция Фильтров */}
                 <div className={styles.filterSection}>
                     <h1>Ваши Мероприятия</h1>
-                     {/* Кнопка создания нового мероприятия */}
-                    <Link to={CREATE_EVENT_ROUTE} className={styles.createButtonLink}>
-                         <button className={styles.button}>Создать Новое Мероприятие</button>
-                    </Link>
-                    {/* Фильтры по типу (можно добавить фильтры по статусу и т.д.) */}
+                    <div className={styles.orgActions}>
+                        <Link to={CREATE_EVENT_ROUTE} className={styles.createButtonLink}>
+                            <button className={styles.button}>Создать Новое Мероприятие</button>
+                        </Link>
+                        {myEvents.length > 0 && !eventsLoading && (
+                            <button 
+                                onClick={() => setShowStatsModal(true)} 
+                                className={`${styles.button} ${styles.statsButton}`}
+                            >
+                                Показать Статистику (Графики)
+                            </button>
+                        )}
+                    </div>
                     <div className={styles.filterList}>
                         <FilterButton onClick={() => handleFilterClick('all')} isActive={filter === 'all'}>Все</FilterButton>
                         <FilterButton onClick={() => handleFilterClick('offline')} isActive={filter === 'offline'}>Оффлайн</FilterButton>
                         <FilterButton onClick={() => handleFilterClick('online')} isActive={filter === 'online'}>Онлайн</FilterButton>
-                        {tags.map((tag) => (
+                        {uniqueTags.map((tag) => (
                             <FilterButton 
                             key={tag.name} 
                             onClick={() => handleFilterClick(tag.name)} 
@@ -133,32 +131,46 @@ const Org = () => {
                             >
                             {tag.name}
                             </FilterButton>
-                            ))}
-                       
+                        ))}
                     </div>
                 </div>
 
-                {/* Секция Списка Событий */}
                 <div className={styles.eventListSection}>
                     {eventsLoading && <p className={styles.loadingMessage}>Загрузка мероприятий...</p>}
-                    {/* Ошибка загрузки списка */}
                     {eventsError && <AlertReg isVisible={true} message={eventsError} type="error" onClose={() => setEventsError(null)} />}
                     {!eventsLoading && !eventsError && (
-                        myEvents.length > 0 ? (
+                        filteredEventsForList.length > 0 ? ( // Используем filteredEventsForList
                             <CardList
-                                events={filteredEvents} // Передаем только свои события
-                                isLog={true} // Организатор авторизован
-                                filter={filter} // Передаем текущий фильтр
-                                isOrganizerView={true} // Включаем вид организатора (редактировать/удалить)
-                                
-                                // Не передаем статусы участия/избранного и обработчики для них
+                                events={filteredEventsForList} // Передаем отфильтрованные события для списка
+                                isLog={true}
+                                isOrganizerView={true}
+                                onEventUpdate={handleEventUpdate}
                             />
                         ) : (
-                            <p className={styles.noEventsMessage}>Вы еще не создали ни одного мероприятия.</p>
+                            <p className={styles.noEventsMessage}>
+                                {filter === 'all' ? 'Вы еще не создали ни одного мероприятия.' : 'Нет мероприятий, соответствующих фильтру.'}
+                            </p>
                         )
                     )}
                  </div>
             </main>
+
+            {/* МОДАЛЬНОЕ ОКНО С ГРАФИКАМИ */}
+            {showStatsModal && (
+                <Portal>
+                    <div className={styles.modalOverlay} onClick={() => setShowStatsModal(false)}>
+                        <div className={`${styles.modalContent} ${styles.modalContentLarge}`} onClick={(e) => e.stopPropagation()}> {/* Добавил modalContent для общих стилей */}
+                            <button className={styles.closeButtonModal} onClick={() => setShowStatsModal(false)}>×</button>
+                            <h2>Статистика по мероприятиям</h2>
+                            {myEvents.length > 0 ? (
+                                <EventStatsCharts eventsData={myEvents} /> 
+                            ) : (
+                                <p>Нет данных для построения графиков.</p>
+                            )}
+                        </div>
+                    </div>
+                </Portal>
+            )}
         </div>
     );
 };

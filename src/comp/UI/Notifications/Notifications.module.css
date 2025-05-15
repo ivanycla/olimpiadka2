@@ -1,0 +1,157 @@
+/* src/comp/UI/Notifications/Notifications.module.css */
+.bellButton {
+  position: relative;
+  background: none;
+  border: none;
+  font-size: 1.8rem; /* Размер иконки колокольчика */
+  cursor: pointer;
+  color: #cccccc; /* СДЕЛАЛ ИКОНКУ СВЕТЛЕЕ ДЛЯ ТЕМНОЙ ТЕМЫ ПРОФИЛЯ */
+  padding: 5px;
+  margin-left: 10px;
+}
+.bellButton:hover {
+  color: #ffffff; /* БЕЛЫЙ ПРИ НАВЕДЕНИИ */
+}
+
+.unreadBadge {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 1px 5px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.modalOverlayFixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Оставил полупрозрачный темный фон */
+  display: flex;
+  align-items: flex-start; 
+  justify-content: flex-end;
+  z-index: 1050;
+  padding: 20px; 
+}
+
+.notificationsModalContent {
+  background-color: #ffffff; /* БЕЛЫЙ ФОН МОДАЛЬНОГО ОКНА */
+  color: #333333;            /* ОСНОВНОЙ ТЕМНЫЙ ЦВЕТ ТЕКСТА ВНУТРИ МОДАЛКИ */
+  width: 380px;
+  max-width: 90vw;
+  max-height: 85vh;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px; 
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  border-bottom: 1px solid #e0e0e0; /* Светлая линия */
+}
+
+.modalHeader h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #212529; /* Темный цвет для заголовка */
+}
+
+.closeModalButton {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  color: #6c757d; /* Серый для крестика */
+  padding: 0;
+  line-height: 1;
+}
+.closeModalButton:hover {
+  color: #343a40; /* Темнее при наведении */
+}
+
+.markAllReadButton {
+  background: none;
+  border: none;
+  color: #007bff; /* Синий для ссылки */
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 5px;
+}
+.markAllReadButton:hover {
+  text-decoration: underline;
+}
+
+
+.notificationList {
+  overflow-y: auto;
+  flex-grow: 1;
+  padding: 0;
+}
+
+.notificationItem {
+  padding: 12px 15px;
+  border-bottom: 1px solid #f0f0f0; /* Очень светлый разделитель */
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+.notificationItem:last-child {
+  border-bottom: none;
+}
+.notificationItem:hover {
+  background-color: #e9ecef; /* Светло-серый фон при наведении */
+}
+
+/* Стили для текста внутри уведомления */
+.message {
+  margin: 0 0 4px 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #343a40; /* Темно-серый для основного сообщения */
+}
+
+.notificationItem.read .message {
+  color: #6c757d; /* Более бледный для прочитанных сообщений */
+  font-weight: normal;
+}
+.notificationItem.unread .message {
+  font-weight: 600; /* Полужирный для непрочитанных */
+  color: #212529; /* Почти черный */
+}
+
+.details { /* Для "Орг: ... Событие: ..." */
+  font-size: 0.8em;
+  color: #495057; /* Темно-серый, но светлее основного текста сообщения */
+  margin: 3px 0 4px 0;
+}
+
+.date {
+  font-size: 0.75rem;
+  color: #6c757d; /* Серый для даты */
+}
+
+.noNotificationsText,
+.loadingMoreText,
+.noMoreNotificationsText {
+  text-align: center;
+  padding: 20px 15px;
+  color: #495057; /* Темно-серый */
+  font-style: italic;
+}

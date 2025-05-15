@@ -1,29 +1,32 @@
-
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react"; // Добавил useRef
 import { useNavigate, Link } from "react-router-dom";
 import FindFriend from '../comp/UI/FindFriend/FindFriend'; 
 import {
-    
     getMyUserProfile,
     updateMyUserProfile,
-   
     getMyParticipatingEvents,
     getMyFavoriteEvents,
-    registerForEvent,
-    unregisterFromEvent,
-    addEventToFavorites,
+    registerForEvent,       // Убедись, что эти функции возвращают Promise<boolean> или обновленный event
+    unregisterFromEvent,    // для корректной работы onParticipateToggle
+    addEventToFavorites,    // Аналогично для onFavoriteToggle
     removeEventFromFavorites,
-   
     getMyPrivacySetting,
     updateMyPrivacySetting,
     getMyFriendIds, 
     removeFriend,
-    getUserProfileById 
-   
+    getUserProfileById
+    // Не забудь импортировать API для уведомлений, если они не в общем api.js
+    // getMyUnreadNotificationsCount, getMyNotifications, markNotificationAsRead, markAllMyNotificationsAsRead
 } from "../api/api"; 
 import CardList from "../comp/UI/CardList/CardList.jsx";
 import AlertReg from "../comp/UI/AlertReg/AlertReg.jsx";
 import styles from '../styles/Profile.module.css'; 
+import NotificationsBell from '../comp/UI/Notifications/NotificationsBell';   // <-- ИМПОРТ
+import NotificationsModal from '../comp/UI/Notifications/NotificationsModal'; // <-- ИМПОРТ
+// Убедись, что Portal импортирован, если NotificationsModal его использует внутри себя,
+// но здесь он не нужен напрямую, так как NotificationsModal сам его использует.
+// import Portal from "../comp/UI/Portal/Portal"; 
+
 const PRIVACY_OPTIONS = {
     PUBLIC: 'Всем авторизованным',
     FRIENDS_ONLY: 'Только друзьям',
@@ -31,7 +34,6 @@ const PRIVACY_OPTIONS = {
 };
 
 const Profile = () => {
-   
     const [profile, setProfile] = useState(null); 
     const [profileLoading, setProfileLoading] = useState(true);
     const [profileError, setProfileError] = useState(null);
@@ -46,18 +48,20 @@ const Profile = () => {
     const [eventsError, setEventsError] = useState(null);
     const [activeTab, setActiveTab] = useState('participating'); 
 
-    // Состояния для приватности
     const [privacySetting, setPrivacySetting] = useState('PRIVATE');
     const [privacyLoading, setPrivacyLoading] = useState(false);
     const [privacyError, setPrivacyError] = useState(null);
 
-    // Состояния для друзей
-    const [friendsData, setFriendsData] = useState([]); // Массив объектов профилей друзей
-    const [friendIds, setFriendIds] = useState(new Set()); // Только ID друзей для быстрой проверки и передачи в модалку
-    const [friendsLoading, setFriendsLoading] = useState(true); // Лоадер для списка друзей
+    const [friendsData, setFriendsData] = useState([]);
+    const [friendIds, setFriendIds] = useState(new Set());
+    const [friendsLoading, setFriendsLoading] = useState(true);
     const [friendsError, setFriendsError] = useState(null);
-    const [showFindFriendModal, setShowFindFriendModal] = useState(false); // Видимость модального окна
+    const [showFindFriendModal, setShowFindFriendModal] = useState(false);
 
+    // --- СОСТОЯНИЕ ДЛЯ МОДАЛЬНОГО ОКНА УВЕДОМЛЕНИЙ ---
+    const [isNotificationsModalOpen, setIsNotificationsModalOpen] = useState(false);
+    const notificationsBellRef = useRef(null); // Для возможного принудительного обновления счетчика
+    // --- --- --- --- --- --- --- --- --- --- --- ---
     const navigate = useNavigate();
 
     // --- Функции Загрузки Данных ---
@@ -216,18 +220,66 @@ const Profile = () => {
     // Перезапускаем, если изменился статус загрузки или сам профиль (например, после редактирования)
     }, [profileLoading, profile, fetchEventsAndIds]);
 
-    // --- Обработчики Действий ---
+
+   // Если Card.jsx вызывает onEventUpdate, и ты хочешь обновлять списки событий в Profile.jsx:
+    const handleEventUpdate = useCallback((updatedEventData) => {
+        const updateList = (prevList) => 
+            prevList.map(event => event.id === updatedEventData.id ? updatedEventData : event);
+        
+        setParticipatingEventsData(prev => updateList(prev));
+        setFavoriteEventsData(prev => updateList(prev));
+
+        // Обновляем ID сеты тоже, на всякий случай, если участие/избранное изменилось
+        if (participatingEventIds.has(updatedEventData.id) && !updatedEventData.isCurrentUserParticipating) { // Предполагаем, что DTO содержит это поле
+            setParticipatingEventIds(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(updatedEventData.id);
+                return newSet;
+            });
+        } else if (!participatingEventIds.has(updatedEventData.id) && updatedEventData.isCurrentUserParticipating) {
+            setParticipatingEventIds(prev => new Set(prev).add(updatedEventData.id));
+        }
+        // Аналогично для favoriteEventIds и updatedEventData.isCurrentUserFavorite
+    }, [participatingEventIds]); // Добавь favoriteEventIds, если они тоже обновляются
+
+
     const handleParticipateToggle = useCallback(async (eventId, currentStatus) => {
        const apiCall = currentStatus ? unregisterFromEvent : registerForEvent;
        setEventsError(null);
        try {
-           await apiCall(eventId);
-           // Перезагружаем ОБА списка после изменения участия
+           const response = await apiCall(eventId); // Предполагаем, API возвращает { success: true } или обновленный event
+           // Если API возвращает обновленный event:
+           // if (response && response.id && handleEventUpdate) {
+           //    handleEventUpdate(response);
+           // }
+           // Для простоты, перезагружаем данные, если API не возвращает обновленный event
            await Promise.all([fetchEventsAndIds('participating', false), fetchEventsAndIds('favorites', false)]);
            return true;
        } catch (err) { console.error("Error toggling participation:", err); setEventsError(err.message || "Ошибка участия."); return false; }
+   }, [fetchEventsAndIds]); // Убрал handleEventUpdate из зависимостей, если он не используется для этого
+
+    const handleFavoriteToggle = useCallback(async (eventId, currentStatus) => {
+        const apiCall = currentStatus ? removeEventFromFavorites : addEventToFavorites;
+        setEventsError(null);
+        try {
+            await apiCall(eventId);
+            await Promise.all([fetchEventsAndIds('participating', false), fetchEventsAndIds('favorites', false)]);
+            return true;
+        } catch (err) { console.error("Error toggling favorite:", err); setEventsError(err.message || "Ошибка избранного."); return false; }
    }, [fetchEventsAndIds]);
 
+    const handleOpenNotificationsModal = () => {
+        setIsNotificationsModalOpen(true);
+        // Можно здесь вызвать markAllMyNotificationsAsRead(), если хочешь, чтобы при открытии все помечалось
+        // markAllMyNotificationsAsRead().then(() => forceBellUpdate()); 
+    };
+     const handleCloseNotificationsModal = () => {
+        setIsNotificationsModalOpen(false);
+        // Принудительно обновить счетчик в колокольчике после закрытия модалки
+        if (notificationsBellRef.current && typeof notificationsBellRef.current.fetchUnreadCount === 'function') {
+            notificationsBellRef.current.fetchUnreadCount();
+        }
+    };
     // Функция, вызываемая после УСПЕШНОГО добавления друга в модальном окне
     const handleFriendAdded = useCallback(() => {
         console.log("Вызван handleFriendAdded в Profile.jsx (после добавления друга)");
@@ -235,16 +287,6 @@ const Profile = () => {
         fetchFriendsData();           // Затем ПЕРЕЗАГРУЖАЕМ список друзей
     }, [fetchFriendsData]); // Зависит от функции перезагрузки
 
-    const handleFavoriteToggle = useCallback(async (eventId, currentStatus) => {
-        const apiCall = currentStatus ? removeEventFromFavorites : addEventToFavorites;
-        setEventsError(null);
-        try {
-            await apiCall(eventId);
-            // Перезагружаем ОБА списка после изменения избранного
-            await Promise.all([fetchEventsAndIds('participating', false), fetchEventsAndIds('favorites', false)]);
-            return true;
-        } catch (err) { console.error("Error toggling favorite:", err); setEventsError(err.message || "Ошибка избранного."); return false; }
-   }, [fetchEventsAndIds]);
 
     // Обработчик изменения полей в форме редактирования профиля
     const handleEditChange = (e) => {
@@ -426,7 +468,7 @@ const Profile = () => {
     };
 
     // Рендеринг секции мероприятий
-    const renderEventsSection = () => {
+     const renderEventsSection = () => {
         const eventsToShow = activeTab === 'participating' ? participatingEventsData : favoriteEventsData;
         const noEventsMessage = activeTab === 'participating'
             ? "Вы еще не участвуете в мероприятиях."
@@ -443,7 +485,16 @@ const Profile = () => {
                 {eventsError && <AlertReg isVisible={true} message={eventsError} type="error" onClose={() => setEventsError(null)}>OK</AlertReg>}
                 {!eventsLoading && !eventsError && (
                     eventsToShow.length > 0 ? (
-                        <CardList events={eventsToShow} isLog={true} isOrganizerView={false} participatingEventIds={participatingEventIds} favoriteEventIds={favoriteEventIds} onParticipateToggle={handleParticipateToggle} onFavoriteToggle={handleFavoriteToggle} />
+                        <CardList 
+                            events={eventsToShow} 
+                            isLog={true} 
+                            isOrganizerView={false} // Важно: для обычного пользователя это false
+                            participatingEventIds={participatingEventIds} 
+                            favoriteEventIds={favoriteEventIds} 
+                            onParticipateToggle={handleParticipateToggle} 
+                            onFavoriteToggle={handleFavoriteToggle}
+                            // onEventUpdate={handleEventUpdate} // Передаем, если Card его использует для обновления статистики на карточке
+                        />
                     ) : ( <p className={styles.noEventsMessage}>{noEventsMessage}</p> )
                 )}
             </div>
@@ -526,18 +577,37 @@ const Profile = () => {
 // --- Финальный Рендеринг Компонента ---
 // В компоненте Profile измените финальный рендеринг:
 // В компоненте Profile измените рендеринг:
-return (
-    <div className={styles.profileContainer}>
-      <div className={styles.mainRow}>
-        {renderProfileSection()}
-        {renderPrivacySection()}
-        {renderFriendsSection()}
-      </div>
-      
-      <div className={styles.eventsRow}>
-        {renderEventsSection()}
-      </div>
-    </div>
-  );
+ return (
+        <div className={styles.profileContainer}>
+            {/* --- ДОБАВЛЯЕМ ИКОНКУ УВЕДОМЛЕНИЙ В ЗАГОЛОВОК ПРОФИЛЯ --- */}
+            <div className={styles.profilePageHeader}> {/* Используй существующий или добавь новый класс для стилизации */}
+                <h1>Мой Профиль</h1>
+                <NotificationsBell onClick={handleOpenNotificationsModal} ref={notificationsBellRef} />
+            </div>
+            {/* --- --- --- --- --- --- --- --- --- --- --- --- */}
+            
+            <div className={styles.mainRow}>
+                {renderProfileSection()}
+                {renderPrivacySection()}
+                {renderFriendsSection()}
+            </div>
+            
+            <div className={styles.eventsRow}>
+                {renderEventsSection()}
+            </div>
+
+            {/* --- МОДАЛЬНОЕ ОКНО УВЕДОМЛЕНИЙ --- */}
+            <NotificationsModal 
+                isOpen={isNotificationsModalOpen} 
+                onClose={handleCloseNotificationsModal} // Используем новый обработчик
+                onForceBellUpdate={() => { // Простая функция для обновления колокольчика
+                    if (notificationsBellRef.current && typeof notificationsBellRef.current.fetchUnreadCount === 'function') {
+                        notificationsBellRef.current.fetchUnreadCount();
+                    }
+                }}
+            />
+            {/* --- --- --- --- --- --- --- --- */}
+        </div>
+    );
 }
 export default Profile;
