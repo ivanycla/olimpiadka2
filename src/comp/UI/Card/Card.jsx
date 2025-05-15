@@ -18,9 +18,8 @@ const Card = ({
     initialIsParticipating = false,
     initialIsFavorite = false,
     onEventUpdate,
-    moderView,
-    onPriorityChange,
-    priorities
+    setRecommendations,
+    
 }) => {
     const navigate = useNavigate();
 
@@ -32,6 +31,7 @@ const Card = ({
     const [selectedSpeaker, setSelectedSpeaker] = useState(null);
     const [speakerActionLoading, setSpeakerActionLoading] = useState(false);
     const [commentFlag,setCommentFlag]=useState(false);
+    
     const currentSpeakers = event?.speakers || [];
 
     useEffect(() => {
@@ -51,6 +51,12 @@ const Card = ({
         const success = await onParticipateToggle(event.id, isParticipating);
         if (!success) setActionError("Ошибка изменения статуса участия");
         setActionLoading(null);
+        const newTags = event.tags.map(t => t.name);
+        setRecommendations((prev) => {
+    const updated = Array.from(new Set([...prev, ...newTags]));
+    localStorage.setItem("recommendations", JSON.stringify(updated));
+    return updated;
+    })
     };
 
     const handleFavoriteClick = async () => {
@@ -253,6 +259,7 @@ const Card = ({
                     />
                     <button 
                     onClick={()=>setCommentFlag(true)}
+                    className={styles.button}
                     >
                         комментарии
                     </button>

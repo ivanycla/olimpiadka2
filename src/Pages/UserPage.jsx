@@ -23,6 +23,13 @@ const UserPage = () => {
     const [actionError, setActionError] = useState(null); // Ошибка действий (участие/избранное)
     const [statusesLoading, setStatusesLoading] = useState(true); // Отдельный лоадер для статусов
     const [tags,setTags]=useState([]);
+    const [recommendations, setRecommendations] = useState(() => {
+        try {
+          return JSON.parse(localStorage.getItem("recommendations")) || [];
+        } catch {
+          return [];
+        }
+      });
     // --- Функции Загрузки Данных ---
     // Загрузка статусов участия и избранного ТЕКУЩЕГО пользователя
     const fetchUserEventStatuses = useCallback(async (showLoading = true) => {
@@ -77,9 +84,8 @@ const UserPage = () => {
         ]).finally(() => {
              setIsLoading(false); // Выключаем главный лоадер после ВСЕХ запросов
         });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []); // Пустой массив зависимостей
-
+   
+    }, []);
     // --- Обработчики для Карточек ---
     const handleParticipateToggle = useCallback(async (eventId, currentStatus) => {
         const apiCall = currentStatus ? unregisterFromEvent : registerForEvent;
@@ -99,21 +105,26 @@ const UserPage = () => {
     
     const filteredEvents = useMemo(() => {
         if (!allEvents.length) return [];
+    
         
+        if (filter === 'recommendations') {
+            return allEvents.filter(event =>
+                event.tags?.some(tag => recommendations.includes(tag.name))
+            );
+        }
         return allEvents.filter(event => {
-            const matchesFormat = 
+            const matchesFormat =
                 filter === 'all' ||
                 (filter === 'offline' && event.format === 'OFFLINE') ||
                 (filter === 'online' && event.format === 'ONLINE');
-            
-            const matchesTag = 
-                filter === 'all' || 
+    
+            const matchesTag =
+                filter === 'all' ||
                 event.tags?.some(tag => tag.name === filter);
-            
+    
             return matchesFormat || matchesTag;
         });
-    }, [allEvents, filter]);
-
+    }, [allEvents, filter, recommendations]);
 
     const handleFavoriteToggle = useCallback(async (eventId, currentStatus) => {
         const apiCall = currentStatus ? removeEventFromFavorites : addEventToFavorites;
@@ -197,6 +208,9 @@ const UserPage = () => {
                             <FilterButton onClick={() => handleFilterClick('all')} isActive={filter === 'all'}>Все</FilterButton>
                             <FilterButton onClick={() => handleFilterClick('offline')} isActive={filter === 'offline'}>Оффлайн</FilterButton>
                             <FilterButton onClick={() => handleFilterClick('online')} isActive={filter === 'online'}>Онлайн</FilterButton>
+                            {recommendations.length > 0 &&(
+                            <FilterButton onClick={() => handleFilterClick("recommendations")} isActive={filter === "recommendations"}>Рекомендации</FilterButton>
+                            )}
                             {tags.map((tag) => (
                             <FilterButton 
                             key={tag.name} 
@@ -217,7 +231,8 @@ const UserPage = () => {
                                 participatingEventIds={participatingEventIds} // Передаем ID участий
                                 favoriteEventIds={favoriteEventIds}       // Передаем ID избранных
                                 onParticipateToggle={handleParticipateToggle} // Обработчик участия
-                                onFavoriteToggle={handleFavoriteToggle}       // Обработчик избранного
+                                onFavoriteToggle={handleFavoriteToggle}
+                                setRecommendations={setRecommendations}       // Обработчик избранного
                                 // onInviteClick можно добавить позже, если нужна функция приглашения
                             />
                         ) : (

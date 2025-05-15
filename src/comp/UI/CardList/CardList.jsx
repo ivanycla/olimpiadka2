@@ -12,6 +12,7 @@ const CardList = ({
   favoriteEventIds,
   onParticipateToggle,
   onFavoriteToggle,
+  setRecommendations,
   moderView
 }) => {
   const [priorities, setPriorities] = useState(() => {
@@ -80,6 +81,7 @@ const CardList = ({
             onParticipateToggle={onParticipateToggle}
             onFavoriteToggle={onFavoriteToggle}
             moderView={moderView}
+            setRecommendations={setRecommendations}
           />
           
           {moderView && (
